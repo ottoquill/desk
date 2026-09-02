@@ -9,8 +9,8 @@ script is the prosthesis. It reports what a human writer would notice by feel.
     python3 tools/prose_audit.py MANUSCRIPT_DIR [--profile voice.json] [--json]
     python3 tools/prose_audit.py DIR_A DIR_B          # compare two books' fingerprints
 
-Stdlib only. See method/04-idiolect-ledger.md for what the numbers mean and
-method/05-voice-engineering.md for how a voice profile is set.
+Stdlib only. See method/06-idiolect-ledger.md for what the numbers mean and
+method/07-voice-engineering.md for how a voice profile is set.
 """
 import argparse, json, os, re, sys, math
 from collections import Counter, defaultdict

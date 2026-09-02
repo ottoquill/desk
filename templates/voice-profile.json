@@ -4,7 +4,7 @@
     "Prose style sheets say 'lucid, precise, unshowy' and four books obey that and come out identical.",
     "This file is the half a style sheet cannot express. Copy it to <book>/editorial/voice-profile.json,",
     "set the targets, then: python3 desk/tools/prose_audit.py <book>/manuscript --profile <that file>",
-    "See desk/method/05-voice-engineering.md for how to choose the numbers, and",
+    "See desk/method/07-voice-engineering.md for how to choose the numbers, and",
     "desk/method/06-idiolect-ledger.md for what the inherited bans are and why they are cumulative."
   ],
   "book": "TITLE",
