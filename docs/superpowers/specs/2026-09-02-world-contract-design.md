@@ -162,13 +162,63 @@ else. Both parsers learn to accept either delimiter so a world may unify if it w
 ### The schema
 
 desk ships `canon/schema.toml` declaring base kinds and their fields — **character, place,
-faction, event, artifact, term** — with `id` and `name` required everywhere and `id` unique across
-the world.
+faction, event, artifact, term, relationship** — with `id` and `name` required everywhere and `id`
+unique across the world.
 
 A world extends the base rather than replacing it, through the optional `schema` key in
 `world.toml`. A hard-SF world adds `technology`; a game world adds `quest`. Without extension desk
 would dictate what a world may contain, and that is this spec's own coupling problem pointing the
 other way.
+
+### Relationship is a kind, not a field
+
+Six of the seven kinds are nodes. `relationship` is an edge, and it earns its own page because the
+alternative — a list of names on each character — cannot hold what a relationship actually carries.
+
+The rationale is Orson Scott Card's, in *Characters & Viewpoint* (1988), where the concept has a
+section heading of its own in chapter 1: **network**. Card describes the self as "a kind of
+network, many threads connecting us to many different people, who are always shifting," and states
+the consequence directly — "we are different people in different relationships." The taciturn
+fellow at work is a cut-up at the bowling alley. A character who sounds the same to everyone has no
+network, and the four-book finding says that flat default is where this author reverts without
+something holding it open.
+
+Card's *network* is the graph; a page is one edge of it. Both halves live in the one file, since
+two cross-referencing character pages give the same relationship two homes and let them drift.
+
+```markdown
++++
+kind    = "relationship"
+id      = "sable-toro"
+name    = "Sable and Toro"
+between = ["sable", "toro"]
+
+[sable_to_toro]
+never_says   = "his first name"
+register     = "drops contractions, sentence length falls"
+routes_around = ["the yards"]
+
+[toro_to_sable]
+never_says = "that he was there"
+register   = "over-explains, may be interrupted"
++++
+
+They have not been in the same room since …
+```
+
+**The per-direction fields are behavioral, never adjectival** — R9a applied to a new kind. "Warm
+but guarded" is exactly the specification four style sheets proved inert. What earns a slot is
+mechanical and checkable: what A never says to B, which register A drops, who may interrupt whom,
+which topic A routes around, whose sentences shorten.
+
+Two things follow that this spec does not build. Naming the addressee is a **dropped candidate** —
+[02-candidate-rules.md](../../../method/reference/02-candidate-rules.md) formalises declaring to
+whom a narration is addressed, with an omission list and a gate, and it never reached
+[02-the-rules.md](../../../method/02-the-rules.md). Promoting it, extended from narrator-to-reader
+to character-to-character, is a change to the constitution and belongs in its own commit. And Card
+names the phenomenon without measuring it, which is the usual shape here: the **interlocutor
+test** — partition a character's dialogue by addressee, mask the names, and check whether the sets
+separate above chance — is piece 3.
 
 ### Two fact lifecycles
 
@@ -216,7 +266,7 @@ in the usual Hugo way, since a module is overridable by design.
    Every other tool reaches the world through it.
 3. **`tools/canon.py`** — schema validation, id uniqueness, cross-reference integrity, fact-store
    extraction.
-4. **`canon/schema.toml`** — the base kinds.
+4. **`canon/schema.toml`** — the seven base kinds, `relationship` among them.
 5. **`desk/hugo/`** — the module: archetypes, layouts, shortcodes, config fragment.
 6. **`tools/continuity.py`** learns `--world`, taking facts and names from canon. The explicit
    flags stay and win when both are given. This tool and `prose_audit.py` both learn to strip
@@ -245,7 +295,8 @@ run by `python3 -m unittest discover tools/tests`:
   product id fails loudly; a malformed manifest reports the file and the reason.
 - **`canon.py`** — a page missing a required field fails; duplicate ids fail; a dangling
   cross-reference fails; a valid set extracts the expected fact store; a world schema extends the
-  base rather than replacing it.
+  base rather than replacing it; a `relationship` whose `between` names an absent character fails,
+  and both directions survive extraction.
 - **`new_world.py`** and **`new_book.py`** — scaffold into a temp directory, then assert the result
   loads through `world.py` and that the appended manifest still parses. Round-trip, not shape.
 - **`prose_audit.py`** — a TOML profile yields the budget map the audit expects, asserted against
@@ -274,5 +325,8 @@ interactive. Needs this contract to know what work exists.
 **Piece 3 — instruments beyond the manuscript.** Smaller than the first draft assumed. Lore pages
 are prose written by the same model and carry the same 28 constructions, so `idiolect_probe.py`
 and `prose_audit.py` already apply to canon bodies and mostly need pointing at them. What genuinely
-needs building is structural: promise and payoff, causal in-degree, and continuity across products
-rather than within one.
+needs building is structural: promise and payoff, causal in-degree, continuity across products
+rather than within one, and the **interlocutor test** — partition a character's dialogue by
+addressee, mask the names, and check whether the sets separate above chance. That last one reuses
+the function-word cosine that found E1, pointed at a new unit, so it is a smaller build than it
+sounds.
