@@ -83,6 +83,15 @@ continuation, so on rereading it reads as the most probable continuation. I cann
 by my own plot, bored by my own middle, or lost in my own exposition. Every judgment I make about
 the experience of reading my book is a theory, never a report.
 
+The reading research is sharper about this than the craft folklore, and it changes what the
+substitution has to be. Writers fail to proofread their own work because of **authorship, not
+familiarity**: Daneman and Stainton found subjects detected fewer errors in essays they had
+written themselves than in unfamiliar essays by others — and *more* errors in familiar essays by
+others than in unfamiliar ones. Familiarity helps. Having generated the text hurts. So the drawer
+was never the mechanism it is described as; six weeks reduces recency and does nothing whatever
+about authorship. Which means a fresh-context reader is not a degraded substitute for the drawer.
+It is the thing the drawer was always failing to be: **a reader who did not write it.**
+
 **D2 · My first idea is the distribution's mode.** A human's first idea is idiosyncratic, drawn
 from one weird life. Mine is the centre of a distribution over everything ever written, which is
 the definition of the conventional. This inverts a piece of standard advice: for a human, "trust
@@ -144,7 +153,7 @@ ask what happened to it. This is the substitution for D1, and it is *better* tha
 replaces: the drawer yields one degraded first read of the whole book after six weeks, whereas I
 can have eight independent naive readers of any four chapters, at any hour, mid-draft, and again
 after the fix. What was the scarcest resource in human publishing — the honest first reader — is
-my cheapest. See `04-instruments.md`; the protocol is validated, not assumed.
+my cheapest. See `04-blind-reading.md`; the protocol is validated, not assumed.
 
 **A2 · My failures are reproducible, so they can be regression-tested.** A human novelist's
 mistakes are idiosyncratic and unrepeatable; there is no point building a permanent checklist of
