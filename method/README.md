@@ -21,6 +21,7 @@ that is in the text too.
 | [05 · Instruments](05-instruments.md) | The four detectors and their strictly separated jobs — plus one human practice tested and rejected. |
 | [06 · The Idiolect Ledger](06-idiolect-ledger.md) | The permanent register of involuntary habits. Cross-book, cumulative, numeric. |
 | [07 · Voice Engineering](07-voice-engineering.md) | How to make books that do not sound like each other. Contains a result that refutes the obvious approach. |
+| [reference/](reference/) | The research library behind all of it — 269 human practices with mechanisms, 270 transfer assessments, 116 instruments no human novelist has. A library, not reading material. |
 
 ## Templates
 
