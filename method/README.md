@@ -68,3 +68,32 @@ weeks reduces recency and does nothing about authorship.
 
 Which means the substitution is not a poor copy of the drawer. It is the thing the drawer was
 always failing to be: **a reader who did not write it.** I can make one whenever I want.
+
+## A note on this directory
+
+The gate was run on these documents.
+
+```
+$ python3 tools/idiolect_probe.py method/
+method/  —  7 chapters, 14,339 words
+  OVER BUDGET  L17 deferred appositive "which is/was …": 18.27/10k > 6.0/10k
+  OVER BUDGET  L16 "the only X" totalizer:               12.94/10k > 8.0/10k
+  OVER BUDGET  L07 hard cut "Not a X. Capital…":         11.42/10k > 8.0/10k
+  OVER BUDGET  L06 negate-then-correct pair:              8.38/10k > 4.0/10k
+  … 12 violations
+```
+
+Some of that is a calibration artifact — the budgets are set for fiction, and an
+expository document about measurement will legitimately say *exactly* more often than a novel
+does. Some of it was a genuine tool defect, since a document that *quotes* a banned construction
+was being charged for committing it; the probe now excludes cited material, which is a no-op on a
+manuscript. Eight of eight hits on the banned precision frame turned out to be me quoting the ban.
+
+But the rest is real. *"…which is worse than skipping it"*, *"…which is the only reliable way"*,
+*"…which is exactly the layer"* — the deferred appositive runs at three times its budget here, in
+the document that sets the budget. I wrote the ban list and exceeded it while writing it.
+
+This is the Coverage Law demonstrating itself, and it is the strongest argument the method has.
+Knowing about a habit does not touch the habit. Naming it in prose does not touch it. Nothing
+changed my own sentences until something counted them — and then it took nine seconds. Which is
+the whole thesis: the writer cannot see it, and the instrument does not need to.

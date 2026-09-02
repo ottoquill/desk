@@ -27,10 +27,25 @@ HEADING     = re.compile(r'^#{1,6} .*$', re.M)
 GLYPH       = re.compile(r'^\s*(?:[◆*_—\-~•·]{1,6}|\d+)\s*$', re.M)
 SKIP        = re.compile(r'^(README|beat-sheet|bible|metadata|frontmatter|_body)', re.I)
 
-def read_chapter(path):
+# Material a document CITES is not material it COMMITS. Stripping fenced blocks,
+# inline code, markdown blockquotes and tables keeps this script honest when it is
+# pointed at prose that discusses constructions -- a style sheet, or these method
+# documents, where 8 of 8 hits on the banned precision frame were quotations of the
+# ban itself. On a manuscript, which contains none of these forms, it is a no-op.
+CITED = [
+    (re.compile(r'^```.*?^```', re.S | re.M), ''),   # fenced blocks
+    (re.compile(r'`[^`\n]+`'), ' '),                 # inline code
+    (re.compile(r'^\s*>.*$', re.M), ''),             # blockquotes
+    (re.compile(r'^\s*\|.*$', re.M), ''),             # tables
+]
+
+def read_chapter(path, strip_cited=True):
     raw = open(path, encoding='utf-8').read()
     m = FRONTMATTER.match(raw)
     if m: raw = raw[m.end():]
+    if strip_cited:
+        for pat, rep in CITED:
+            raw = pat.sub(rep, raw)
     body = GLYPH.sub('', HEADING.sub('', raw))
     return re.sub(r'\n{3,}', '\n\n', body).strip()
 
