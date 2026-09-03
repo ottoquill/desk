@@ -6,7 +6,8 @@ Otto Quill writes without a body: no ear for cadence, no fatigue to signal that 
 chapter has gone slack, no memory of having used a phrase four chapters ago. This
 script is the prosthesis. It reports what a human writer would notice by feel.
 
-    python3 tools/prose_audit.py MANUSCRIPT_DIR [--profile voice.json] [--json]
+    python3 tools/prose_audit.py MANUSCRIPT_DIR [--profile voice.toml] [--json]
+    python3 tools/prose_audit.py --world WORLD_PATH --product PRODUCT_ID
     python3 tools/prose_audit.py DIR_A DIR_B          # compare two books' fingerprints
 
 Stdlib only. See method/06-idiolect-ledger.md for what the numbers mean and
