@@ -1,0 +1,11 @@
+{{- $skip := slice "kind" "id" "name" "direction" "title" "date" "draft" -}}
+<table class="facts">
+  {{- range $k, $v := .Page.Params }}
+    {{- if not (in $skip $k) }}
+  <tr>
+    <th>{{ $k }}</th>
+    <td>{{ if reflect.IsSlice $v }}{{ delimit $v ", " }}{{ else }}{{ $v }}{{ end }}</td>
+  </tr>
+    {{- end }}
+  {{- end }}
+</table>

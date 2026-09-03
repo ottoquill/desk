@@ -1,0 +1,9 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<ul class="canon__index">
+  {{ range .Pages.ByTitle }}
+  <li><a href="{{ .RelPermalink }}">{{ .Params.name | default .Title }}</a>
+      <span class="canon__kind">{{ .Params.kind }}</span></li>
+  {{ end }}
+</ul>
+{{ end }}

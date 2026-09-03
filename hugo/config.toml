@@ -1,0 +1,10 @@
+# Mounted by a world's hugo.toml. Canon pages live under content/canon and render with the canon
+# layouts; a world that wants its own look overrides them in the usual Hugo way.
+
+[[module.mounts]]
+source = "layouts"
+target = "layouts"
+
+[[module.mounts]]
+source = "archetypes"
+target = "archetypes"

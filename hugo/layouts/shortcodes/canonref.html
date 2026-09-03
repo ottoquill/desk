@@ -1,0 +1,8 @@
+{{- $id := .Get 0 -}}
+{{- $matches := where (where site.RegularPages "Section" "canon") "Params.id" $id -}}
+{{- if $matches -}}
+  {{- $target := index $matches 0 -}}
+<a class="canonref" href="{{ $target.RelPermalink }}">{{ $target.Params.name | default $target.Title }}</a>
+{{- else -}}
+<span class="canonref canonref--dangling" title="no canon page with id {{ $id }}">{{ $id }}</span>
+{{- end -}}
