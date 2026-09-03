@@ -1,0 +1,50 @@
+# The base canon kinds. desk ships the kinds; a world names the instances.
+#
+# A world EXTENDS this through the `schema` key in its world.toml. Extension adds kinds and adds
+# fields to existing kinds; it never removes either, because a world that could delete a base field
+# would put desk's guarantees at the mercy of each world.
+#
+#   required  fields that must be present, beyond [common]
+#   optional  fields the validator recognises and leaves alone
+#   refs      field -> the kind its value(s) must resolve to, by id
+
+[common]
+required = ["kind", "id", "name"]
+
+[kinds.character]
+required = []
+optional = ["pronouns", "occupation", "factions", "first_seen"]
+refs     = { factions = "faction" }
+
+[kinds.place]
+required = []
+optional = ["region", "factions"]
+refs     = { factions = "faction" }
+
+[kinds.faction]
+required = []
+optional = ["seat", "founded"]
+refs     = { seat = "place" }
+
+[kinds.event]
+required = ["when"]
+optional = ["where", "participants"]
+refs     = { where = "place", participants = "character" }
+
+[kinds.artifact]
+required = []
+optional = ["origin", "held_by"]
+refs     = { origin = "place", held_by = "character" }
+
+[kinds.term]
+required = []
+optional = ["aliases"]
+refs     = {}
+
+# An edge, not a node. Card's network (Characters & Viewpoint, 1988, ch1): the self is "a kind of
+# network, many threads connecting us to many different people", and "we are different people in
+# different relationships." Both directions live in this one page so the halves cannot drift.
+[kinds.relationship]
+required = ["between"]
+optional = []
+refs     = { between = "character" }
