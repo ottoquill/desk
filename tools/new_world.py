@@ -31,12 +31,31 @@ canon = "content/canon"
 # path = "books/book-one"
 '''
 
-HUGO = '''# Mounts desk's canon module. A world that renders no wiki can delete this file.
+HUGO = '''# Mounts desk's canon layouts and archetypes. A world that renders no wiki can delete
+# this file. These are mounts rather than a [[module.imports]] entry because an import names a Hugo
+# Module, which Hugo resolves through the Go toolchain or under themes/ — and desk is a git
+# submodule at desk/, so the import fails before a single page renders. A mount needs neither.
+#
+# This world's own layouts/ and archetypes/ are mounted first, so anything it puts there wins over
+# desk's. Neither directory has to exist.
 baseURL = "/"
 title   = "{title}"
 
-[[module.imports]]
-path = "desk/hugo"
+[[module.mounts]]
+source = "layouts"
+target = "layouts"
+
+[[module.mounts]]
+source = "desk/hugo/layouts"
+target = "layouts"
+
+[[module.mounts]]
+source = "archetypes"
+target = "archetypes"
+
+[[module.mounts]]
+source = "desk/hugo/archetypes"
+target = "archetypes"
 '''
 
 CANON_DIRS = ('characters', 'places', 'factions', 'events', 'artifacts', 'terms', 'relationships')
@@ -71,7 +90,7 @@ def main():
     print(f"""
 created {root}/
   world.toml            the manifest desk reads
-  hugo.toml             mounts desk/hugo
+  hugo.toml             mounts desk/hugo/layouts and desk/hugo/archetypes
   content/canon/        canon pages: +++ TOML front matter, prose body
 
 next:

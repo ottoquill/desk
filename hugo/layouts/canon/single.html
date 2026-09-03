@@ -1,7 +1,7 @@
 {{ define "main" }}
-<article class="canon canon--{{ .Params.kind }}">
+<article class="canon canon--{{ .Params.canon_kind }}">
   <h1>{{ .Params.name | default .Title }}</h1>
-  <p class="canon__kind">{{ .Params.kind }}</p>
+  <p class="canon__kind">{{ .Params.canon_kind }}</p>
   {{ partial "facts.html" . }}
   <div class="canon__body">{{ .Content }}</div>
 </article>

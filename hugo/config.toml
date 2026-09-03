@@ -1,5 +1,10 @@
-# Mounted by a world's hugo.toml. Canon pages live under content/canon and render with the canon
-# layouts; a world that wants its own look overrides them in the usual Hugo way.
+# This module's own mounts, read only when a world imports desk/hugo as a Hugo Module. The
+# scaffold new_world.py writes does not: it mounts desk/hugo/layouts and desk/hugo/archetypes
+# straight from the world's hugo.toml, because a [[module.imports]] entry sends Hugo looking for a
+# Go module or a themes/ directory and desk is neither, it is a git submodule.
+#
+# Canon pages live under content/canon and render with the canon layouts; a world that wants its
+# own look overrides them in the usual Hugo way, from its own layouts/ directory.
 
 [[module.mounts]]
 source = "layouts"

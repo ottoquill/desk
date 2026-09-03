@@ -139,11 +139,11 @@ prose in the body carrying the lore.
 
 ```markdown
 +++
-kind     = "character"
-id       = "sable"
-name     = "Sable"
-pronouns = "she/her"
-factions = ["salvagers"]
+canon_kind = "character"
+id         = "sable"
+name       = "Sable"
+pronouns   = "she/her"
+factions   = ["salvagers"]
 +++
 
 Sable came up through the yards, which is where she learned …
@@ -152,6 +152,10 @@ Sable came up through the yards, which is where she learned …
 One artifact, three consumers: Hugo renders it, the canon validator checks it, and
 `continuity.py` reads its front matter as the typed fact store. Nobody authors lore in JSON, and
 the front matter earns the gate its facts without a parallel data file to keep in step.
+
+The field naming the kind is `canon_kind`, not `kind`. Hugo deprecated `kind` in front matter in
+v0.144.0 and has since removed it: a page carrying it fails the build outright and reads back empty
+from `.Params.kind`. Nothing else about the shape changes.
 
 **Front matter is TOML, delimited `+++`.** Types are unambiguous, `tomllib` parses it from the
 stdlib, and it is one of Hugo's native forms. Manuscript chapters keep their existing `---` and are
@@ -162,8 +166,8 @@ else. Both parsers learn to accept either delimiter so a world may unify if it w
 ### The schema
 
 desk ships `canon/schema.toml` declaring base kinds and their fields — **character, place,
-faction, event, artifact, term, relationship** — with `id` and `name` required everywhere and `id`
-unique across the world.
+faction, event, artifact, term, relationship** — with `canon_kind`, `id` and `name` required
+everywhere and `id` unique across the world.
 
 A world extends the base rather than replacing it, through the optional `schema` key in
 `world.toml`. A hard-SF world adds `technology`; a game world adds `quest`. Without extension desk
@@ -188,10 +192,10 @@ two cross-referencing character pages give the same relationship two homes and l
 
 ```markdown
 +++
-kind    = "relationship"
-id      = "sable-toro"
-name    = "Sable and Toro"
-between = ["sable", "toro"]
+canon_kind = "relationship"
+id         = "sable-toro"
+name       = "Sable and Toro"
+between    = ["sable", "toro"]
 
 [sable_to_toro]
 never_says   = "his first name"

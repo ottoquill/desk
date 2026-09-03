@@ -2,7 +2,7 @@ import pathlib, sys, tempfile, unittest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import canon, world
 
-PAGE = ('+++\nkind = "character"\nid = "a"\nname = "Ashgrove"\n'
+PAGE = ('+++\ncanon_kind = "character"\nid = "a"\nname = "Ashgrove"\n'
         'pronouns = "they/them"\noccupation = "surveyor"\n'
         'factions = ["ghosts"]\n+++\n\nProse.\n')
 
@@ -27,7 +27,7 @@ class TestExtract(unittest.TestCase):
     def test_structure_and_collections_are_not_facts(self):
         with tempfile.TemporaryDirectory() as d:
             attrs = {f['attribute'] for f in canon.facts(load(d, {'a.md': PAGE}))}
-            self.assertNotIn('kind', attrs)
+            self.assertNotIn('canon_kind', attrs)
             self.assertNotIn('id', attrs)
             self.assertNotIn('name', attrs)
             self.assertNotIn('factions', attrs)
@@ -39,14 +39,14 @@ class TestExtract(unittest.TestCase):
 
     def test_names_come_from_character_pages_only(self):
         with tempfile.TemporaryDirectory() as d:
-            place = '+++\nkind = "place"\nid = "p"\nname = "Ashfall"\n+++\n\nP.\n'
+            place = '+++\ncanon_kind = "place"\nid = "p"\nname = "Ashfall"\n+++\n\nP.\n'
             names = canon.names(load(d, {'a.md': PAGE, 'p.md': place}))
             self.assertEqual(names, {'Ashgrove': ['a']})
 
     def test_toml_dates_are_converted_to_iso_strings_and_json_serializable(self):
         import json
         with tempfile.TemporaryDirectory() as d:
-            event = ('+++\nkind = "event"\nid = "e"\nname = "Founding"\nwhen = 1889-07-14\n'
+            event = ('+++\ncanon_kind = "event"\nid = "e"\nname = "Founding"\nwhen = 1889-07-14\n'
                      '+++\n\nText.\n')
             facts = canon.facts(load(d, {'e.md': event}))
             # Find the 'when' fact
@@ -59,7 +59,7 @@ class TestExtract(unittest.TestCase):
 
     def test_numeric_types_survive_as_numbers(self):
         with tempfile.TemporaryDirectory() as d:
-            char = ('+++\nkind = "character"\nid = "c"\nname = "Test"\n'
+            char = ('+++\ncanon_kind = "character"\nid = "c"\nname = "Test"\n'
                     'count = 42\nratio = 3.14\nactive = true\n+++\n\nText.\n')
             facts = canon.facts(load(d, {'c.md': char}))
             facts_by_attr = {f['attribute']: f for f in facts}
@@ -75,7 +75,7 @@ class TestExtract(unittest.TestCase):
 
     def test_inline_tables_are_excluded_like_lists(self):
         with tempfile.TemporaryDirectory() as d:
-            char = ('+++\nkind = "character"\nid = "c"\nname = "Test"\n'
+            char = ('+++\ncanon_kind = "character"\nid = "c"\nname = "Test"\n'
                     'config = { key = "value" }\n+++\n\nText.\n')
             facts = canon.facts(load(d, {'c.md': char}))
             attrs = {f['attribute'] for f in facts}

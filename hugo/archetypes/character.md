@@ -1,5 +1,5 @@
 +++
-kind       = "character"
+canon_kind = "character"
 id         = "{{ .Name }}"
 name       = ""
 pronouns   = ""

@@ -1,9 +1,9 @@
 +++
-kind    = "faction"
-id      = "{{ .Name }}"
-name    = ""
-seat    = ""
-founded = ""
+canon_kind = "faction"
+id         = "{{ .Name }}"
+name       = ""
+seat       = ""
+founded    = ""
 +++
 
 Prose.

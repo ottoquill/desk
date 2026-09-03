@@ -1,11 +1,3 @@
-{{- $skip := slice "kind" "id" "name" "direction" "title" "date" "draft" -}}
-<table class="facts">
-  {{- range $k, $v := .Page.Params }}
-    {{- if not (in $skip $k) }}
-  <tr>
-    <th>{{ $k }}</th>
-    <td>{{ if reflect.IsSlice $v }}{{ delimit $v ", " }}{{ else }}{{ $v }}{{ end }}</td>
-  </tr>
-    {{- end }}
-  {{- end }}
-</table>
+{{- /* Same panel as the partial, callable from a page body. One implementation, two entry
+       points — a copy of the partial here drifts from it the first time the skip list changes. */ -}}
+{{- partial "facts.html" .Page -}}

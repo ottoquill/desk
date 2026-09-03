@@ -1,0 +1,16 @@
+{{- /* The base every canon layout fills. Without one, `{{ define "main" }}` renders nothing and
+       every page comes out empty. A world that wants its own chrome overrides this file in the
+       usual Hugo way, by placing its own at layouts/_default/baseof.html. */ -}}
+<!DOCTYPE html>
+<html lang="{{ or site.Language.LanguageCode site.Language.Lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ .Params.name | default .Title }} · {{ site.Title }}</title>
+</head>
+<body>
+  <main>
+{{ block "main" . }}{{ end }}
+  </main>
+</body>
+</html>

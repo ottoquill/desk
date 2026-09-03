@@ -57,8 +57,8 @@ anywhere a relative or absolute path resolves. `PATH/world.toml` already existin
 rather than getting overwritten. What gets created:
 
 ```
-PATH/world.toml            the manifest desk reads: title, desk path, canon path, products
-PATH/hugo.toml              mounts desk/hugo
+PATH/world.toml             the manifest desk reads: title, desk path, canon path, products
+PATH/hugo.toml              mounts desk/hugo/layouts and desk/hugo/archetypes
 PATH/content/canon/         one directory per kind, each holding a .gitkeep
 ```
 
@@ -73,7 +73,7 @@ matter as a typed fact store for a manuscript to be checked against.
 
 ```
 +++
-kind       = "character"
+canon_kind = "character"
 id         = "SLUG"
 name       = "Name"
 pronouns   = ""
@@ -84,13 +84,20 @@ factions   = ["OTHER-SLUG"]
 Prose. What this person is like to be in a room with.
 ```
 
-Every page declares `kind`, `id`, and `name`. The base schema at `desk/canon/schema.toml` adds
-required and optional fields per kind — `character`, `place`, `faction`, `event`, `artifact`,
-`term`, `relationship` — and declares which fields are references. A `factions` field on a
-character has to resolve to a page carrying `kind = "faction"` and that same `id`; `canon.py`
-checks it. A world may extend the schema with kinds and fields of its own. Narrowing a field
-`desk` already requires, or redirecting a reference `desk` already declares to a different target,
-both raise an error instead.
+Every page declares `canon_kind`, `id`, and `name`. The field is `canon_kind` and not `kind`
+because Hugo deprecated `kind` in front matter in v0.144.0 and has since removed it, so a page
+carrying it fails the build. The base schema at `desk/canon/schema.toml` adds required and optional
+fields per kind — `character`, `place`, `faction`, `event`, `artifact`, `term`, `relationship` —
+and declares which fields are references. A `factions` field on a character has to resolve to a
+page carrying `canon_kind = "faction"` and that same `id`; `canon.py` checks it.
+
+A world may extend the schema with kinds and fields of its own, and extension is a union. A
+world's `required` list for a kind gets added to desk's, so a world listing fewer fields than desk
+does drops none of them: to the merge, a short list and a list of additions look the same, and the
+union is what keeps desk's guarantees out of each world's hands. Two things do raise an error:
+redirecting a reference `desk` already declares to a different target, and giving `required`,
+`optional` or `refs` a value of the wrong type, such as a bare string where the schema wants a
+list.
 
 ```bash
 python3 desk/tools/canon.py --world .

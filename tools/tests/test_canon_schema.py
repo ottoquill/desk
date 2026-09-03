@@ -18,7 +18,7 @@ class TestSchema(unittest.TestCase):
         self.assertEqual(set(s['kinds']), BASE_KINDS)
 
     def test_id_and_name_and_kind_are_required_everywhere(self):
-        self.assertEqual(set(canon.load_schema()['common']['required']), {'kind', 'id', 'name'})
+        self.assertEqual(set(canon.load_schema()['common']['required']), {'canon_kind', 'id', 'name'})
 
     def test_relationship_requires_between_and_refs_characters(self):
         rel = canon.load_schema()['kinds']['relationship']

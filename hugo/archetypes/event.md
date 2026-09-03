@@ -1,5 +1,5 @@
 +++
-kind         = "event"
+canon_kind   = "event"
 id           = "{{ .Name }}"
 name         = ""
 when         = ""

@@ -1,4 +1,15 @@
-{{- $skip := slice "kind" "id" "name" "direction" "title" "date" "draft" -}}
+{{- /* The fact panel: every front-matter field that is a fact about the entity.
+       Two things are skipped. Ours are structure rather than facts — canon_kind, id and name are
+       the page's identity and already in the heading, and `direction` is the relationship's own
+       nested table, which has its own shape. Hugo's are the reserved front-matter fields it
+       injects into .Params whether a page declares them or not; without them the panel prints
+       rows like `iscjklanguage | false` as canon. */ -}}
+{{- $ours := slice "canon_kind" "id" "name" "direction" -}}
+{{- $hugos := slice "aliases" "build" "cascade" "date" "description" "draft" "expirydate"
+    "headless" "iscjklanguage" "keywords" "layout" "lastmod" "linktitle" "markup" "menus"
+    "modified" "outputs" "params" "publishdate" "published" "resources" "sitemap" "slug"
+    "summary" "title" "translationkey" "type" "unpublishdate" "url" "weight" -}}
+{{- $skip := union $ours $hugos -}}
 <table class="facts">
   {{- range $k, $v := .Page.Params }}
     {{- if not (in $skip $k) }}

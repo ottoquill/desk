@@ -3,7 +3,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import new_book, new_world
 
 TOOLS = pathlib.Path(__file__).resolve().parents[1]
-CHARACTER = '+++\nkind = "character"\nid = "{id}"\nname = "{name}"\n+++\n\nProse.\n'
+CHARACTER = '+++\ncanon_kind = "character"\nid = "{id}"\nname = "{name}"\n+++\n\nProse.\n'
 
 # Two genuine two-word capitalised name pairs, so scan_surnames's cross-book-reuse check
 # (which matches on individual tokens, not full names) has something real to find:
@@ -40,7 +40,7 @@ class TestCliWorld(unittest.TestCase):
 
     def test_canon_cli_fails_on_a_dangling_reference(self):
         (self.root / 'content/canon/characters/c.md').write_text(
-            '+++\nkind = "character"\nid = "c"\nname = "C"\nfactions = ["ghosts"]\n+++\n\nP.\n',
+            '+++\ncanon_kind = "character"\nid = "c"\nname = "C"\nfactions = ["ghosts"]\n+++\n\nP.\n',
             encoding='utf-8')
         r = run('canon.py', '--world', str(self.root))
         self.assertEqual(r.returncode, 1)

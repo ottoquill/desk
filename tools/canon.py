@@ -10,7 +10,7 @@ Canon pages are read from the world's canon directory. Files whose names begin w
 are skipped — these are Hugo section metadata (_index.md) and branch-bundle configuration, not canon
 pages themselves.
 
-    python3 tools/canon.py --world PATH [--json]
+    python3 tools/canon.py --world PATH
 
 Stdlib only. Requires Python 3.11+ for tomllib.
 """
@@ -66,7 +66,7 @@ def load_schema(world=None):
 FRONTMATTER = re.compile(r'\A\+\+\+[ \t]*\n(.*?)\n\+\+\+[ \t]*\n?', re.S)
 
 # Fields that are structure rather than facts about the entity.
-NOT_A_FACT = {'kind', 'id', 'name', 'direction'}
+NOT_A_FACT = {'canon_kind', 'id', 'name', 'direction'}
 
 
 def parse_page(path):
@@ -117,13 +117,13 @@ def validate(pages, schema):
     seen = {}
     ids_by_kind = {}
     for path, meta, _ in pages:
-        ids_by_kind.setdefault(meta.get('kind'), set()).add(meta.get('id'))
+        ids_by_kind.setdefault(meta.get('canon_kind'), set()).add(meta.get('id'))
 
     for path, meta, _ in pages:
         for field in common:
             if field not in meta:
                 errors.append(f"{path}: missing required field {field!r}")
-        kind = meta.get('kind')
+        kind = meta.get('canon_kind')
         pid = meta.get('id')
         if pid is not None:
             if pid in seen:
@@ -182,7 +182,7 @@ def names(pages):
     """Character names, mapped to the page ids that carry them."""
     out = {}
     for _, meta, _ in pages:
-        if meta.get('kind') == 'character' and meta.get('name'):
+        if meta.get('canon_kind') == 'character' and meta.get('name'):
             out.setdefault(meta['name'], []).append(meta.get('id'))
     return out
 

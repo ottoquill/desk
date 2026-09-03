@@ -3,7 +3,7 @@
 <ul class="canon__index">
   {{ range .Pages.ByTitle }}
   <li><a href="{{ .RelPermalink }}">{{ .Params.name | default .Title }}</a>
-      <span class="canon__kind">{{ .Params.kind }}</span></li>
+      <span class="canon__kind">{{ .Params.canon_kind }}</span></li>
   {{ end }}
 </ul>
 {{ end }}

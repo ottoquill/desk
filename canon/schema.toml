@@ -9,9 +9,14 @@
 #   required  fields that must be present, beyond [common]
 #   optional  fields the validator recognises and leaves alone
 #   refs      field -> the kind its value(s) must resolve to, by id
+#
+# The front-matter field naming a page's kind is `canon_kind`, not `kind`. Hugo deprecated `kind`
+# in front matter in v0.144.0 and has since removed it: a page carrying it fails the build and
+# reads back empty from `.Params.kind`. The section names below stay `kinds.*` — only the field
+# on the page is renamed.
 
 [common]
-required = ["kind", "id", "name"]
+required = ["canon_kind", "id", "name"]
 
 [kinds.character]
 required = []
