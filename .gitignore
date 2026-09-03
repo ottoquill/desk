@@ -1,3 +1,10 @@
 __pycache__/
 *.pyc
 .superpowers/
+
+# The Hugo site: content/ is generated from method/ and templates/ by
+# site/generate.py, and public/ is the build. Neither is a source.
+site/content/
+site/public/
+site/resources/
+site/.hugo_build.lock

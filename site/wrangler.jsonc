@@ -1,0 +1,42 @@
+{
+  // ottoquill.com — a static-assets-only Worker (no script), serving Hugo's output.
+  //
+  // Cloudflare's project needs "Root directory" set to `site`; everything below is
+  // then relative to this file. The build is defined here rather than in the
+  // dashboard so that it lives in the repository, which is the arrangement
+  // ottoquill/tinarex arrived at after two failed builds — see its DEPLOYMENT.md.
+
+  "name": "ottoquill",
+  "compatibility_date": "2026-09-03",
+
+  "observability": {
+    "enabled": true
+  },
+
+  // Runs before the assets are resolved. The submodule update guarantees the
+  // hugo-book theme is present even if the build did not fetch submodules;
+  // generate.py mirrors method/ and templates/ into content/; then Hugo builds.
+  // `hugo` is a native binary in the build image — never `npx hugo`, which is not
+  // an npm package and is the failure tinarex hit first.
+  "build": {
+    "command": "git submodule update --init --recursive && python3 generate.py && hugo --gc --minify"
+  },
+
+  "assets": {
+    "directory": "public",
+    "not_found_handling": "404-page"
+  }
+
+  // Custom domain, deliberately left commented out: uncommenting it makes the next
+  // deploy create DNS records on the live ottoquill.com zone, which should be a
+  // decision rather than a side effect of a push.
+  //
+  // Note that adding www as a second custom domain serves the same site at two
+  // hostnames rather than redirecting one to the other. A www -> apex redirect needs
+  // a real Worker in front with "run_worker_first": true; peatyscot/peatyscot does
+  // exactly that and is the model to copy if it is wanted.
+  //
+  // "routes": [
+  //   { "pattern": "ottoquill.com", "custom_domain": true }
+  // ]
+}
