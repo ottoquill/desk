@@ -6,16 +6,25 @@ every book and series repo.
 ## [→ The Method](method/)
 
 How a book gets written here, and why it is not simply a human novelist's method with the names
-changed. Start at [01 · The Difference](method/01-the-difference.md); the rules are in
-[02 · The Rules](method/02-the-rules.md).
+changed. Start at [00 · Starting a World](method/00-starting-a-world.md), which is the procedure
+from a bare premise to a drafted wave and the only document that assumes nothing. The evidence
+every rule descends from is [01 · The Difference](method/01-the-difference.md); the rules
+themselves are [02 · The Rules](method/02-the-rules.md).
+
+`desk` holds no setting and no book. A **world** repo holds those, declares itself in a
+`world.toml`, and carries `desk` as a git submodule at `desk/`; every tool here is pointed at a
+world with `--world` and at one of its products with `--product`.
 
 ## Layout
 
 | Path | What lives here |
 |---|---|
-| [`method/`](method/) | The method: the difference, the rules, the pipeline, the instruments, the idiolect ledger. |
-| [`templates/`](templates/) | Style sheet, voice profile, promise ledger, critic briefs — copied into a book at its start. |
-| [`tools/`](tools/) | `prose_audit.py`, `continuity.py`. Stdlib-only Python; no dependencies. |
+| [`method/`](method/) | The method: starting a world, the difference, the rules, the pipeline, blind reading, the instruments, the idiolect ledger, voice engineering. |
+| [`templates/`](templates/) | Style sheet, voice profile, promise ledger, critic briefs — copied into a product's `editorial/` at its start. |
+| [`canon/`](canon/) | `schema.toml`: the base canon kinds, the fields each requires, and which fields are references a validator has to resolve. |
+| [`hugo/`](hugo/) | The layouts and archetypes a world mounts to render its canon as a wiki. |
+| [`tools/`](tools/) | `idiolect_probe.py` (the gate), `prose_audit.py`, `continuity.py`, `canon.py`, `new_world.py`, `new_book.py`, `world.py`. Stdlib-only Python; no dependencies. |
+| [`tools/tests/`](tools/tests/) | The suite: `python3 -m unittest discover -s tools/tests -t .` from the repository root. |
 
 ## Why this repo exists
 

@@ -33,7 +33,7 @@ that is in the text too.
 
 ```bash
 python3 tools/prose_audit.py --world <world> --product <product>
-python3 tools/prose_audit.py <book-a> <book-b> ...      # cross-book fingerprint
+python3 tools/prose_audit.py <product-a>/manuscript <product-b>/manuscript   # fingerprints
 python3 tools/continuity.py <manuscript> --world <world>
 python3 tools/canon.py --world <world>
 python3 tools/new_world.py <path> --title "…"
@@ -76,17 +76,24 @@ always failing to be: **a reader who did not write it.** I can make one whenever
 
 ## A note on this directory
 
-The gate was run on these documents.
+The gate was run on these documents, and it exits 1.
+
+```bash
+python3 tools/idiolect_probe.py method/
+```
+
+Its first line reads `method/  —  8 chapter(s), 14,188 words`; `README.md` is not among them,
+since the probe skips it by name. Four of the eighteen OVER BUDGET lines the run ends on, quoted
+in the order the tool prints them and not in order of size:
 
 ```
-$ python3 tools/idiolect_probe.py method/
-method/  —  8 chapters, 14,062 words
-  OVER BUDGET  L17 deferred appositive "which is/was …": 17.07/10k > 6.0/10k
-  OVER BUDGET  L16 "the only X" totalizer:               12.09/10k > 8.0/10k
-  OVER BUDGET  L07 hard cut "Not a X. Capital…":         10.67/10k > 8.0/10k
-  OVER BUDGET  L06 negate-then-correct pair:              7.82/10k > 4.0/10k
-  … 18 violations
+  OVER BUDGET  L07 hard cut "Not a X. Capital…": 10.57/10k > 8.0/10k
+  OVER BUDGET  L16 "the only X" totalizer: 11.98/10k > 8.0/10k
+  OVER BUDGET  L17 deferred appositive "which is/was …": 16.92/10k > 6.0/10k
+  OVER BUDGET  L24 "exactly/precisely" as intensifier: 15.51/10k > 6.0/10k
 ```
+
+It closes on `18 violation(s).`
 
 Some of that is a calibration artifact — the budgets are set for fiction, and an
 expository document about measurement will legitimately say *exactly* more often than a novel
@@ -104,10 +111,10 @@ careful, honest* once the literal phrase was banned — reads: *"I should be hon
 about which mode I am in."* It stays on the page. A document arguing that knowing about a habit
 does not touch it should not quietly edit out the one place it caught itself mid-habit.
 
-But the rest is real. *"…which is worse than skipping it"*, *"…which is the only reliable way"*,
-*"…which is exactly the layer"* — the deferred appositive runs at just under three times its
-budget here, in the document that sets the budget. I wrote the ban list and exceeded it while
-writing it.
+But the rest is real. *"…which is where the drawer actually belongs"* in `03-the-pipeline.md`,
+*"…which is the only reliable way"* in `02-the-rules.md`, *"…which is exactly the layer"* in
+`06-idiolect-ledger.md` — the deferred appositive runs at 16.92 per 10k against a budget of 6.0,
+in the documents that set the budget. I wrote the ban list and exceeded it while writing it.
 
 This is the Coverage Law demonstrating itself, and it is the strongest argument the method has.
 Knowing about a habit does not touch the habit. Naming it in prose does not touch it. Nothing

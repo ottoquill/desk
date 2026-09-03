@@ -88,10 +88,10 @@ Not for whether a chapter *works*. Every critic here has the bible open, and kno
 chapter is for is precisely what stops anyone noticing that it does not work — in the one case
 where both instruments were run, the chapter blind readers unanimously rated worst was one the
 briefed panel had not flagged at all. That question goes to blind readers, unbriefed, under
-`method/04-blind-reading.md`.
+`desk/method/04-blind-reading.md`.
 
 ## Recording
 
-Log findings-per-critic-per-book in `method/06-idiolect-ledger.md`'s harvest section. Yield
+Log findings-per-critic-per-book in `desk/method/06-idiolect-ledger.md`'s harvest section. Yield
 is only interpretable against a fixed brief; the moment someone improves the wording, the series
 restarts.

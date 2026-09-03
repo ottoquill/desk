@@ -5,11 +5,11 @@
 # Copy to <product>/editorial/voice-profile.toml, set the targets, then:
 #   python3 <desk>/tools/prose_audit.py --world . --product <id>
 #
-# See method/07-voice-engineering.md for how to choose the numbers, and
-# method/06-idiolect-ledger.md for what the inherited bans are and why they accumulate.
+# See desk/method/07-voice-engineering.md for how to choose the numbers, and
+# desk/method/06-idiolect-ledger.md for what the inherited bans are and why they accumulate.
 
 book = "TITLE"
-inherits_ledger = "method/06-idiolect-ledger.md"
+inherits_ledger = "desk/method/06-idiolect-ledger.md"
 chapter_words = [2400, 3600]
 
 # Phrases the style sheet deliberately repeats; the audit stops calling these refrains. Anything
@@ -76,7 +76,7 @@ forbidden_figures = []
 evasion         = ""
 sentence_median = [7, 11]
 
-# The aridity screen (method/05). abstract_terms are THIS book's idea vocabulary; people are the
+# The aridity screen (desk/method/05). abstract_terms are THIS book's idea vocabulary; people are the
 # characters whose presence anchors a scene. Both are product-specific — declare them or the
 # screen is skipped.
 [screen]

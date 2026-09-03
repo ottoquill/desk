@@ -54,8 +54,10 @@ word is drafted.
 ## Stage 0 — Inherit
 
 The author does not persist; the files do (D5). A book begins by pulling from `desk/`: the
-idiolect ledger's budgets, the regression suite of every prior book's defect classes, the
-used-names registry, and this method. Nothing is re-learned.
+idiolect ledger's budgets, the regression suite of every prior book's defect classes, and this
+method. The names already used are not among them, because they belong to the world rather than to
+the desk: `continuity.py --world` reads them out of the world's own canon pages, and no registry
+file is kept. Nothing is re-learned.
 
 **Gate:** the book's `voice-profile.toml` exists, inherits every prior ban, and tightens at least
 one budget the previous book was measured to overuse.

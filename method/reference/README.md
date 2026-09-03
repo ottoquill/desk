@@ -5,9 +5,13 @@ of the finished novels: 269 human practices with their mechanisms, 270 transfer 
 candidate rules, 116 instruments unavailable to a human novelist, and 67 forensic findings with
 file-level evidence.
 
-**This is a library, not reading material.** The method itself is the seven documents one level up,
-and it is 16,000 words. This directory is here because the author does not persist between sessions
-(R1) and re-deriving it costs more than storing it.
+**This is a library, not reading material.** The method itself is the eight documents one level up,
+and it runs to about 17,000 words. This directory is here because the author does not persist
+between sessions (R1) and re-deriving it costs more than storing it.
+
+The library predates the world contract and is kept as it was written, so a few of its names are
+one revision behind the rest of the repository: where it says `voice-profile.json`, read
+`templates/voice-profile.toml`, and where it says `<book>/`, read `<product>/`.
 
 | | |
 |---|---|

@@ -16,9 +16,13 @@ because of it. Anything belonging to the author rather than to one book belongs 
 
 ## Commands
 
-The tools are stdlib-only Python 3, with no build step, no test suite and no linter.
+The tools are stdlib-only Python 3, with no build step and no linter. There is a test suite, and
+it runs from the repository root.
 
 ```bash
+# The tests. Stdlib unittest. The Hugo build test skips itself where hugo is not installed.
+python3 -m unittest discover -s tools/tests -t .
+
 # The gate. Exit code 1 if any BAN fires or any RATION exceeds its budget.
 python3 tools/idiolect_probe.py <product>/manuscript
 python3 tools/idiolect_probe.py chapter.md            # a single chapter
@@ -27,7 +31,7 @@ python3 tools/idiolect_probe.py <dir> --json
 
 # The description. Cadence, budgets, refrains, opener concentration, aridity screen.
 python3 tools/prose_audit.py --world <world> --product <product>
-python3 tools/prose_audit.py <book-a> <book-b> ...    # cross-book fingerprint comparison
+python3 tools/prose_audit.py <product-a>/manuscript <product-b>/manuscript   # fingerprints
 
 # Continuity. Runs four manuscript-only scans with no flags at all.
 python3 tools/continuity.py <product>/manuscript --world <world>
@@ -45,7 +49,7 @@ from the probe's exit code, never from an agent reading the audit's output.
 ## This repo's prose is subject to its own gate
 
 `python3 tools/idiolect_probe.py method/` exits non-zero today, and that is a recorded finding
-rather than a defect awaiting cleanup. The deferred appositive `which is/was` runs at 17.07/10k
+rather than a defect awaiting cleanup. The deferred appositive `which is/was` runs at 16.92/10k
 against a 6.0 budget in the documents that set the budget. The closing section of
 [method/README.md](method/README.md) explains why it stays on the record.
 
