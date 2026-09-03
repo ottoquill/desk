@@ -152,6 +152,32 @@ def validate(pages, schema):
     return errors
 
 
+def facts(pages):
+    """Scalar front-matter fields as a typed fact store, in continuity.py's shape.
+
+    Collections are skipped: a list of factions is membership, not a single-valued fact, and
+    feeding it to a contradiction check that keys on (entity, attribute) would report every
+    multi-valued field as a conflict."""
+    out = []
+    for path, meta, _ in pages:
+        entity = meta.get('id')
+        for key, value in meta.items():
+            if key in NOT_A_FACT or isinstance(value, (list, dict)):
+                continue
+            out.append({'entity': entity, 'attribute': key, 'value': value,
+                        'unit': '', 'chapter': str(path)})
+    return out
+
+
+def names(pages):
+    """Character names, mapped to the page ids that carry them."""
+    out = {}
+    for _, meta, _ in pages:
+        if meta.get('kind') == 'character' and meta.get('name'):
+            out.setdefault(meta['name'], []).append(meta.get('id'))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -170,6 +196,7 @@ def main():
     print(f"\n  CANON — {w.canon}  ({len(pages)} pages)")
     for e in errors:
         print(f"    x {e}")
+    print(f"    {len(facts(pages))} facts, {len(names(pages))} character names")
     print(f"\n  {'FAIL' if errors else 'PASS'} — {len(errors)} finding(s)\n")
     sys.exit(1 if errors else 0)
 
