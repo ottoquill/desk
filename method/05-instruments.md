@@ -20,7 +20,7 @@ another's job.
 
 ## 1. Measurement
 
-`python3 desk/tools/prose_audit.py <manuscript-dir> --profile <book>/editorial/voice-profile.json`
+`python3 desk/tools/prose_audit.py --world . --product <product>`
 
 Reports cadence against the book's declared targets, every idiolect budget with its overrun
 factor, sentence-opener concentration, cross-chapter refrains, chapter-length outliers, and the

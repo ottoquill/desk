@@ -119,8 +119,8 @@ declared in `world.toml` is refused rather than overwritten.
 ## The path from concept to draft
 
 Stages 0 through 5 of `03-the-pipeline.md`, in the order a book actually moves through them, each
-paired with the command whose exit code is its gate — a number a script returns, not a description
-a person reads and nods along to.
+paired with its gate: a number a script returns where one exists, a plain description where none
+does yet.
 
 | Stage | What happens | The gate |
 |---|---|---|
@@ -128,7 +128,7 @@ a person reads and nods along to.
 | 1 · The spine | premise, argument, ending, refusals. Never delegated | back-cover copy and the last line exist |
 | 2 · Canon and outline | canon pages, machine-readable outline | `python3 desk/tools/canon.py --world .` returns zero: pages valid against the schema, ids unique, references live |
 | 4 · Wave drafting | chapters in waves, in the reader's ignorance | `python3 desk/tools/continuity.py <ms> --world .` returns zero |
-| 5 · Post-wave audit | after each wave, never at book end | `python3 desk/tools/idiolect_probe.py <ms>` exits zero |
+| 5 · Post-wave audit | after each wave, never at book end | every budget under ceiling, every refrain declared or removed |
 
 Stage 2's other gate — the one `03-the-pipeline.md` actually specifies for the outline half, a
 repeat budget per shape tag, a chapter ceiling on the central relationship's absence, and a named
@@ -140,17 +140,23 @@ code: it gets written as prohibition, at the level of syntax, and its check is t
 owns a figure no other narrator gets to use. See `07-voice-engineering.md` for how that gets
 written, and for the measured reason a mood-description style sheet fails to do the job.
 
-At Stage 5, `prose_audit.py` supplies the description and `idiolect_probe.py` supplies the gate,
-and the two do not share an input. `prose_audit.py` measures a manuscript against that product's
-own `editorial/voice-profile.toml`; `idiolect_probe.py` enforces the cross-book ledger compiled
-into its own source, a table no single book's profile can edit or loosen. Only the second exit
-code decides whether a wave is allowed to pass.
+Stage 5 has no single exit code either. `prose_audit.py` produces the numbers its gate is stated
+in — cadence, every idiolect budget with its overrun factor, cross-chapter refrains — but the
+script always returns 0 itself; the two criteria above get read off its report, never asserted by
+it.
 
 ```bash
 python3 desk/tools/prose_audit.py --world . --product book-one
+```
+
+`idiolect_probe.py` gates none of Stages 0 through 5. `03-the-pipeline.md` puts its exit-zero at
+Stage 10's ship gates, against the cross-book ledger compiled into its own source — a table no
+single book's profile can edit or loosen — and runs it again at Stage 11 to harvest whatever
+proves newly shared across books into that table, with a number:
+
+```bash
 python3 desk/tools/idiolect_probe.py books/book-one/manuscript
 ```
 
-Run the second command after every wave, not once at the end. A finding stays open until then. A
-plan to fix it, a commit that claims to, and an agent's report that it is done are not proof of
-that — only a second run of that same command, returned clean, is (R28).
+A plan to fix a finding, a commit that claims to, and an agent's report that it is done are not
+proof of that — only a second run of the detector that opened it, returned clean, is (R28).

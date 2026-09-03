@@ -108,7 +108,8 @@ multi-sentence paragraphs end on a sentence *longer* than the paragraph average;
 paragraph closes are ≤ 6 words. The book does long-then-**longer**, book-wide, and shipped. The
 drafting agents believed they were obeying; the reviewers believed it had been obeyed.
 
-> **An unmeasured instruction is decoration. Every prose rule ships with the query that decides it.**
+> **An unmeasured instruction is decoration. Every prose rule ships with the query that decides
+> it.**
 
 **Naming three influences causes the problem.** "Egan's rigor, Chiang's restraint, Baxter's
 deep-time sublime." "The love-child of Saramago's premise-rigor, Ishiguro's restraint, and the

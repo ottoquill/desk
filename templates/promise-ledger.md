@@ -61,6 +61,6 @@ quietly reads as an anticlimax, a quiet promise paid loudly reads as contrivance
    ledger is lying.
 4. **Refrain development.** Every `refrain` row must show what changed on each recurrence. A
    refrain that recurs unchanged is a tic wearing a refrain's clothes — see
-   `desk/method/06-idiolect-ledger.md`.
+   `method/06-idiolect-ledger.md`.
 5. **Double payment.** A promise paid twice weakens both payments. Keep the stronger.
 6. **Silent cuts.** If a chapter is cut or rewritten, re-check every row that planted in it.

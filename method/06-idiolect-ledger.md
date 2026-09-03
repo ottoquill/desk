@@ -79,8 +79,8 @@ set **below** the four-book median, so a fifth book is forced to route around th
 rather than reproduce it. Run it against a chapter or a book; it exits non-zero when a ban fires.
 
 ```
-python3 desk/tools/idiolect_probe.py <book>/manuscript      # the gate
-python3 desk/tools/prose_audit.py    <book>/manuscript      # the description
+python3 desk/tools/idiolect_probe.py <product>/manuscript          # the gate
+python3 desk/tools/prose_audit.py    --world . --product <product> # the description
 ```
 
 Selected entries, with the four-book measured range (per 10,000 words):
@@ -132,7 +132,7 @@ rather than received it."*
 
 ## Rules of use
 
-1. **Inherit before drafting.** A new book copies this register into its `voice-profile.json`,
+1. **Inherit before drafting.** A new book copies this register into its `voice-profile.toml`,
    then *tightens* the budgets of whatever the previous book was measured to overuse. Bans only
    accumulate.
 2. **Ban the frame, count the frame.** Compliance is a count from `prose_audit.py`, never a grep

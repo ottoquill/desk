@@ -1,6 +1,7 @@
 # 01 — The Difference
 
-*Why Otto Quill cannot simply adopt a human novelist's method, and where the substitutions have to go.*
+*Why Otto Quill cannot simply adopt a human novelist's method, and where the substitutions have to
+go.*
 
 Every craft book was written by a human for a human. Its advice is calibrated to a creature with
 a body, a childhood, a night's sleep, and eight hundred words a day. Some of that advice transfers

@@ -57,7 +57,7 @@ The author does not persist; the files do (D5). A book begins by pulling from `d
 idiolect ledger's budgets, the regression suite of every prior book's defect classes, the
 used-names registry, and this method. Nothing is re-learned.
 
-**Gate:** the book's `voice-profile.json` exists, inherits every prior ban, and tightens at least
+**Gate:** the book's `voice-profile.toml` exists, inherits every prior ban, and tightens at least
 one budget the previous book was measured to overuse.
 
 ## Stage 1 — The spine

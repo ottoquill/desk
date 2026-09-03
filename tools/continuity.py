@@ -8,14 +8,17 @@ blockers across four books were a single fact asserted two incompatible ways by 
 in the same parallel wave. Parallel drafting agents diverge on facts and converge on phrasing;
 this script is the defense against the first half.
 
-    python3 tools/continuity.py MANUSCRIPT_DIR [--facts facts.json] [--names names.json]
+    python3 tools/continuity.py MANUSCRIPT_DIR [--facts facts.json] [--names registry.json]
+    python3 tools/continuity.py MANUSCRIPT_DIR --world WORLD_PATH
 
 --facts   a typed fact store: [{"entity","attribute","value","unit","chapter"}, ...]
           Drafting agents already return an `invented` array of details other chapters must
           honour. Merge those arrays into this file after every wave and run this BEFORE the next
           wave drafts. Any (entity, attribute) key carrying two values is a defect, not a nuance.
---names   the cross-book used-names registry from desk/, so book N+1 does not reuse a name that
-          book N deliberately renamed away from.
+--names   an explicit cross-book used-names registry, so book N+1 does not reuse a name that book N
+          deliberately renamed away from.
+--world   a world root or world.toml; sources both facts and the used-names registry straight from
+          canon, so nothing above needs assembling by hand.
 
 With neither flag it still runs four manuscript-only scans that need no configuration at all.
 

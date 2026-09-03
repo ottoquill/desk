@@ -7,7 +7,7 @@ doubt, consult this file, not taste; the drafter may have no taste in context.*
 > not by how interesting they are. §2 and §3 are the ones that matter. A style sheet that
 > describes a *mood* produces prose at the centre of the distribution — four previous novels
 > written to four detailed mood-descriptions came out statistically indistinguishable. This one
-> describes *sentences* and *prohibitions* instead. See `desk/method/07-voice-engineering.md`.
+> describes *sentences* and *prohibitions* instead. See `method/07-voice-engineering.md`.
 
 ## 1 · What the book is
 
@@ -35,8 +35,8 @@ Not adjectives. Answer these, concretely:
 invented; a target names the solution, so it can be complied with — and compliance, for this
 author, means retrieval of the nearest thing in the distribution.*
 
-- **Inherited bans.** Every construction in `desk/method/06-idiolect-ledger.md`, at the budgets in
-  this book's `editorial/voice-profile.json`. Bans name **constructions with free slots**, never
+- **Inherited bans.** Every construction in `method/06-idiolect-ledger.md`, at the budgets in
+  this book's `editorial/voice-profile.toml`. Bans name **constructions with free slots**, never
   strings: banning *"I want to be precise about"* produced *"exact / honest / clear / modest /
   careful"* and 32 surviving instances.
 - **This book's additional bans.** Whatever the previous book was measured to overuse.

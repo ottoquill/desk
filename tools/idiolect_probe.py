@@ -8,10 +8,10 @@ travel to the next book. This script is the regression test for those constructi
 It is designed to be run by a subagent that remembers nothing: every verdict is a
 number against a budget, never a judgement.
 
-    python3 desk/tools/idiolect_probe.py CHAPTER.md            # one chapter
-    python3 desk/tools/idiolect_probe.py BOOK/manuscript       # whole book
-    python3 desk/tools/idiolect_probe.py DIR --baseline        # print measured rates only
-    python3 desk/tools/idiolect_probe.py DIR --json
+    python3 tools/idiolect_probe.py CHAPTER.md            # one chapter
+    python3 tools/idiolect_probe.py MANUSCRIPT_DIR        # whole book
+    python3 tools/idiolect_probe.py DIR --baseline        # print measured rates only
+    python3 tools/idiolect_probe.py DIR --json
 
 Exit code 1 if any BAN fires or any RATION exceeds budget. Budgets are per 10,000
 words. They are set BELOW the four-book measured median so a fifth book is forced

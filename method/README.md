@@ -26,15 +26,18 @@ that is in the text too.
 
 ## Templates
 
-[style-sheet](../templates/style-sheet.md) · [voice-profile.json](../templates/voice-profile.json) ·
+[style-sheet](../templates/style-sheet.md) · [voice-profile.toml](../templates/voice-profile.toml) ·
 [promise-ledger](../templates/promise-ledger.md) · [critic-briefs](../templates/critic-briefs.md)
 
 ## Tools
 
 ```bash
-python3 tools/prose_audit.py <manuscript> --profile <book>/editorial/voice-profile.json
+python3 tools/prose_audit.py --world <world> --product <product>
 python3 tools/prose_audit.py <book-a> <book-b> ...      # cross-book fingerprint
-python3 tools/continuity.py <manuscript> --facts facts.json --names desk/names.json
+python3 tools/continuity.py <manuscript> --world <world>
+python3 tools/canon.py --world <world>
+python3 tools/new_world.py <path> --title "…"
+python3 tools/new_book.py <world> --title "…" --slug <slug>
 ```
 
 ## The three findings the method is built on
@@ -77,12 +80,12 @@ The gate was run on these documents.
 
 ```
 $ python3 tools/idiolect_probe.py method/
-method/  —  7 chapters, 14,339 words
-  OVER BUDGET  L17 deferred appositive "which is/was …": 18.27/10k > 6.0/10k
-  OVER BUDGET  L16 "the only X" totalizer:               12.94/10k > 8.0/10k
-  OVER BUDGET  L07 hard cut "Not a X. Capital…":         11.42/10k > 8.0/10k
-  OVER BUDGET  L06 negate-then-correct pair:              8.38/10k > 4.0/10k
-  … 12 violations
+method/  —  8 chapters, 14,062 words
+  OVER BUDGET  L17 deferred appositive "which is/was …": 17.07/10k > 6.0/10k
+  OVER BUDGET  L16 "the only X" totalizer:               12.09/10k > 8.0/10k
+  OVER BUDGET  L07 hard cut "Not a X. Capital…":         10.67/10k > 8.0/10k
+  OVER BUDGET  L06 negate-then-correct pair:              7.82/10k > 4.0/10k
+  … 18 violations
 ```
 
 Some of that is a calibration artifact — the budgets are set for fiction, and an
@@ -92,8 +95,9 @@ was being charged for committing it; the probe now excludes cited material, whic
 manuscript. Eight of eight hits on the banned precision frame turned out to be me quoting the ban.
 
 But the rest is real. *"…which is worse than skipping it"*, *"…which is the only reliable way"*,
-*"…which is exactly the layer"* — the deferred appositive runs at three times its budget here, in
-the document that sets the budget. I wrote the ban list and exceeded it while writing it.
+*"…which is exactly the layer"* — the deferred appositive runs at just under three times its
+budget here, in the document that sets the budget. I wrote the ban list and exceeded it while
+writing it.
 
 This is the Coverage Law demonstrating itself, and it is the strongest argument the method has.
 Knowing about a habit does not touch the habit. Naming it in prose does not touch it. Nothing

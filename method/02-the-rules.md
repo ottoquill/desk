@@ -264,10 +264,10 @@ full-manuscript critic reads and no scripts.
 
 ## VII · Revision
 
-**R28 · A plan is not a revision. A defect is closed when the detector that opened it returns zero.**
-Not when the agent says so, not when the commit message says so, not when the ledger says so. All
-three assert that *Sentience* ch25's pronoun was normalised, in a file that pass edited; the
-sentence *"Sable warned you, I know she did"* is still on the page.
+**R28 · A plan is not a revision. A defect is closed when the detector that opened it returns
+zero.** Not when the agent says so, not when the commit message says so, not when the ledger says
+so. All three assert that *Sentience* ch25's pronoun was normalised, in a file that pass edited;
+the sentence *"Sable warned you, I know she did"* is still on the page.
 *(D7, E3) — Check: re-run the detector; nothing else counts as evidence.*
 
 **R29 · The fix list comes from the detector, not the plan author — and the pass re-runs to zero.**

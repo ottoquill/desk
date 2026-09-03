@@ -1,12 +1,14 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this
+repository.
 
 ## What this repository is
 
 `desk/` holds Otto Quill's writing method, templates, and measurement tools, shared across every
-book and series repo. It is checked out alongside a book, and the invocations throughout the docs
-assume that layout: `desk/tools/...`, `<book>/manuscript`, `<book>/editorial/voice-profile.json`.
+book and series repo. A world repo references `desk/` as a git submodule and declares itself in
+`world.toml`; desk reads that manifest and has no other window onto the world. Invocations take
+`--world` and `--product` rather than assuming a layout.
 
 The premise, from the README: the author does not persist between books, and the files do. A craft
 lesson recorded inside a book repo is lost to the next book, and nine defect classes have recurred
@@ -18,17 +20,23 @@ The tools are stdlib-only Python 3, with no build step, no test suite and no lin
 
 ```bash
 # The gate. Exit code 1 if any BAN fires or any RATION exceeds its budget.
-python3 tools/idiolect_probe.py <book>/manuscript
+python3 tools/idiolect_probe.py <product>/manuscript
 python3 tools/idiolect_probe.py chapter.md            # a single chapter
 python3 tools/idiolect_probe.py <dir> --baseline      # report rates, pass no verdict
 python3 tools/idiolect_probe.py <dir> --json
 
 # The description. Cadence, budgets, refrains, opener concentration, aridity screen.
-python3 tools/prose_audit.py <book>/manuscript --profile <book>/editorial/voice-profile.json
+python3 tools/prose_audit.py --world <world> --product <product>
 python3 tools/prose_audit.py <book-a> <book-b> ...    # cross-book fingerprint comparison
 
 # Continuity. Runs four manuscript-only scans with no flags at all.
-python3 tools/continuity.py <book>/manuscript --facts facts.json --names desk/names.json
+python3 tools/continuity.py <product>/manuscript --world <world>
+
+# The world contract. Every tool reaches a world through the manifest.
+python3 tools/world.py --help          # loader; used by the tools below
+python3 tools/canon.py --world <world>
+python3 tools/new_world.py <path> --title "…"
+python3 tools/new_book.py <world> --title "…" --slug <slug>
 ```
 
 `idiolect_probe.py` gates and `prose_audit.py` describes. Hold that line: a budget verdict comes
@@ -37,7 +45,7 @@ from the probe's exit code, never from an agent reading the audit's output.
 ## This repo's prose is subject to its own gate
 
 `python3 tools/idiolect_probe.py method/` exits non-zero today, and that is a recorded finding
-rather than a defect awaiting cleanup. The deferred appositive `which is/was` runs at 18.27/10k
+rather than a defect awaiting cleanup. The deferred appositive `which is/was` runs at 17.07/10k
 against a 6.0 budget in the documents that set the budget. The closing section of
 [method/README.md](method/README.md) explains why it stays on the record.
 
@@ -122,11 +130,11 @@ Editing it makes yields from different books incomparable (E4).
 
 - `tools/` is stdlib-only. A dependency breaks the assumption that a subagent with no environment
   can run the gate.
-- `templates/` gets copied into a book at its start, living at `<book>/editorial/`. A new book's
+- `templates/` gets copied into a book at its start, living at `<product>/editorial/`. A new book's
   profile inherits every prior ban and tightens at least one budget the last book overused
   (R1, Stage 0).
-- `names.json` is the cross-book used-names registry and is still empty, so the CROSS-BOOK NAME
-  REUSE line from `continuity.py` passes on a check it never performed. Populate it at Stage 11
-  harvest before treating that line as a gate.
+- The cross-book used-names registry is not a file to populate; it is read straight out of canon.
+  `continuity.py --world <world>` sources it from every character page under the world's canon
+  directory, so the CROSS-BOOK NAME REUSE check is only as complete as canon is.
 - Commit messages carry the reasoning and the numbers in full paragraphs. `git log` shows the
   shape.
