@@ -32,8 +32,8 @@ python3 tools/prose_audit.py <book-a> <book-b> ...    # cross-book fingerprint c
 # Continuity. Runs four manuscript-only scans with no flags at all.
 python3 tools/continuity.py <product>/manuscript --world <world>
 
-# The world contract. Every tool reaches a world through the manifest.
-python3 tools/world.py --help          # loader; used by the tools below
+# The world contract. Every tool below imports world.py to reach a world through the
+# manifest; world.py has no CLI of its own.
 python3 tools/canon.py --world <world>
 python3 tools/new_world.py <path> --title "…"
 python3 tools/new_book.py <world> --title "…" --slug <slug>
@@ -53,10 +53,14 @@ Two consequences for edits here:
 
 - Never loosen a budget to make `method/` pass. Budgets sit below the four-book measured median on
   purpose, and bans only accumulate (R3).
-- Quoting a banned construction is free; committing one is not. The probe strips fenced blocks,
-  inline code, blockquotes and tables before counting, so discuss a construction inside backticks
-  or a blockquote. Eight of eight hits on the banned `precision frame` turned out to be the ban
-  quoting itself.
+- Quoting a banned construction inside backticks, a blockquote, a fenced block, or a table is
+  free; quoting it in italics is not — the probe strips only the first four forms. Six hits fire on
+  the banned `precision frame` in `method/` today. Five are italicized quotations of the ban in
+  `02-the-rules.md`, `04-blind-reading.md` (two), and `06-idiolect-ledger.md` (two) — real
+  instances of the tool defect, since emphasis reads as citation to a person but not to a regex.
+  The sixth is a live instance: `01-the-difference.md`'s own D8 paragraph uses `honest` — the very
+  adjective its own E2 section records this construction recruiting once the literal phrase was
+  banned. Left on the page; see `method/README.md`'s closing section for why.
 
 Run the probe over prose you add to `method/`, and compare against the recorded baseline.
 
@@ -135,6 +139,8 @@ Editing it makes yields from different books incomparable (E4).
   (R1, Stage 0).
 - The cross-book used-names registry is not a file to populate; it is read straight out of canon.
   `continuity.py --world <world>` sources it from every character page under the world's canon
-  directory, so the CROSS-BOOK NAME REUSE check is only as complete as canon is.
+  directory and reports matches as NAMES ALREADY IN CANON, not CROSS-BOOK NAME REUSE — that label
+  is reserved for an explicit `--names` registry file, since a manuscript matching its own world's
+  canon is expected rather than reused. Either way the check is only as complete as its source.
 - Commit messages carry the reasoning and the numbers in full paragraphs. `git log` shows the
   shape.

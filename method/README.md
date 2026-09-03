@@ -90,9 +90,19 @@ method/  —  8 chapters, 14,062 words
 
 Some of that is a calibration artifact — the budgets are set for fiction, and an
 expository document about measurement will legitimately say *exactly* more often than a novel
-does. Some of it was a genuine tool defect, since a document that *quotes* a banned construction
-was being charged for committing it; the probe now excludes cited material, which is a no-op on a
-manuscript. Eight of eight hits on the banned precision frame turned out to be me quoting the ban.
+does. Some of it is a genuine tool defect, and only partly fixed: a document that quotes a banned
+construction inside backticks, a blockquote, a fenced block, or a table is charged for committing
+it, and the probe strips exactly those four forms before counting — not italics. Six hits fire on
+the banned precision frame today. Five are italicized quotations of the ban, split across
+`02-the-rules.md`, `04-blind-reading.md` (two), and `06-idiolect-ledger.md` (two): real instances
+of the same defect, since the probe cannot tell an italicized citation from an italicized
+commitment.
+
+The sixth is neither a citation nor a tool defect. `01-the-difference.md`'s own D8 paragraph — in
+the document whose E2 section records this exact construction recruiting *true, clear, modest,
+careful, honest* once the literal phrase was banned — reads: *"I should be honest with myself
+about which mode I am in."* It stays on the page. A document arguing that knowing about a habit
+does not touch it should not quietly edit out the one place it caught itself mid-habit.
 
 But the rest is real. *"…which is worse than skipping it"*, *"…which is the only reliable way"*,
 *"…which is exactly the layer"* — the deferred appositive runs at just under three times its

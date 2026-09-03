@@ -30,8 +30,10 @@ SKIP        = re.compile(r'^(README|beat-sheet|bible|metadata|frontmatter|_body)
 # Material a document CITES is not material it COMMITS. Stripping fenced blocks,
 # inline code, markdown blockquotes and tables keeps this script honest when it is
 # pointed at prose that discusses constructions -- a style sheet, or these method
-# documents, where 8 of 8 hits on the banned precision frame were quotations of the
-# ban itself. On a manuscript, which contains none of these forms, it is a no-op.
+# documents. It is a partial fix: italics are not stripped, so an italicized
+# quotation of a ban still gets charged for committing it -- five of the six current
+# hits on the banned precision frame in method/ are exactly that. On a manuscript,
+# which contains none of these forms, this stripping is a no-op.
 CITED = [
     (re.compile(r'^```.*?^```', re.S | re.M), ''),   # fenced blocks
     (re.compile(r'`[^`\n]+`'), ' '),                 # inline code
