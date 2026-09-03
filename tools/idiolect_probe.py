@@ -22,7 +22,7 @@ See method/06-idiolect-ledger.md for the evidence behind each entry.
 import argparse, json, os, re, sys, statistics
 from collections import Counter
 
-FRONTMATTER = re.compile(r'\A---\s*\n.*?\n---\s*\n', re.S)
+FRONTMATTER = re.compile(r'\A(?:---|\+\+\+)\s*\n.*?\n(?:---|\+\+\+)\s*\n', re.S)
 HEADING     = re.compile(r'^#{1,6} .*$', re.M)
 GLYPH       = re.compile(r'^\s*(?:[◆*_—\-~•·]{1,6}|\d+)\s*$', re.M)
 SKIP        = re.compile(r'^(README|beat-sheet|bible|metadata|frontmatter|_body)', re.I)

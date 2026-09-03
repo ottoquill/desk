@@ -1,0 +1,93 @@
+# A voice constitution, specified where voice actually lives: syntax and cadence, not adjectives.
+# Prose style sheets say "lucid, precise, unshowy"; four books obeyed that and came out identical.
+# This file is the half a style sheet cannot express.
+#
+# Copy to <product>/editorial/voice-profile.toml, set the targets, then:
+#   python3 <desk>/tools/prose_audit.py --world . --product <id>
+#
+# See method/07-voice-engineering.md for how to choose the numbers, and
+# method/06-idiolect-ledger.md for what the inherited bans are and why they accumulate.
+
+book = "TITLE"
+inherits_ledger = "method/06-idiolect-ledger.md"
+chapter_words = [2400, 3600]
+
+# Phrases the style sheet deliberately repeats; the audit stops calling these refrains. Anything
+# NOT listed here that recurs in three or more chapters is self-priming rather than craft. Each
+# declared refrain must name its owner and its home chapter in the style sheet.
+declared_refrains = []
+
+# DIAGNOSTIC ONLY — never hand these to a drafting agent as a target. Tested: given numeric cadence
+# targets, drafts came back rated 3.0/10 for quality and 8.7/10 for mannered, last of six by every
+# judge ("you can hear the period key being pressed"). Use them to DETECT drift back to the
+# median-11 default, then fix by rewriting the prose brief, never by asking for shorter sentences.
+[cadence]
+sentence_mean       = [14.0, 19.0]
+sentence_median     = [9, 14]
+sentence_p90        = [30, 45]
+pct_very_short_le5  = [12.0, 26.0]
+pct_long_ge40       = [5.0, 14.0]
+long_then_short_rate = [20.0, 50.0]
+dialogue_pct        = [6.0, 25.0]
+
+# Instances per 10,000 words. Ceilings, not targets. These are the constraints that work: a
+# prohibition leaves the solution unspecified so it must be invented, while a target names the
+# solution so it can be complied with. Bans name a CONSTRUCTION, never a phrase — Sentience banned
+# "I want to be precise about" and got true / clear / modest / careful instead. Run the
+# measure-revise loop against these, never against the cadence block above.
+[budgets]
+"simile-frame:the-way-you"      = 8.0
+"hedge:not-quite"               = 2.0
+"hedge:want-to-be-X-about"      = 0.3
+"hedge:X-is-the-only-Y"         = 0.5
+"negate-then-correct"           = 4.0
+"hard-cut:not-X-period-Y"       = 9.0
+"summarizing-close:whole-of"    = 0.5
+"deferred-appositive:which-was" = 6.0
+"abstraction-reach:thing"       = 30.0
+"abstraction-reach:something"   = 12.0
+"abstraction-reach:kind-sort-of" = 8.0
+"abstraction-reach:a-shape"     = 0.5
+"causal-reflex:because"         = 30.0
+"narrator-aside:of-course"      = 2.0
+"filter-verbs"                  = 20.0
+"emotion-named"                 = 8.0
+"adverb:-ly"                    = 70.0
+"epiphany:it-was-then"          = 0.0
+"fancy-attribution"             = 1.0
+
+# Per-narrator fingerprints, assigned BEFORE drafting and audited after (R15). Parallel drafting
+# agents diverge on facts and converge on tics; the ledger defends the facts and this defends the
+# voices. Give each narrator a syntactic habit, a metaphor domain it owns exclusively, a
+# characteristic evasion, and one figure no other narrator may touch.
+[narrators.NARRATOR_A]
+syntax          = "long subordinated sentences that qualify themselves; rarely a fragment"
+metaphor_domain = "instruments, measurement, calibration"
+owns_figures    = ["the specific image only this narrator may use"]
+forbidden_figures = ["figures owned by other narrators"]
+evasion         = "what this narrator reaches for instead of saying the true thing"
+sentence_median = [12, 18]
+
+[narrators.NARRATOR_B]
+syntax          = "parataxis; short declaratives joined by 'and'; fragments permitted"
+metaphor_domain = "weather, animals, the body"
+owns_figures    = []
+forbidden_figures = []
+evasion         = ""
+sentence_median = [7, 11]
+
+# The aridity screen (method/05). abstract_terms are THIS book's idea vocabulary; people are the
+# characters whose presence anchors a scene. Both are product-specific — declare them or the
+# screen is skipped.
+[screen]
+abstract_terms = ["consciousness", "identity", "substrate", "theorem", "proof", "experience",
+                  "instance", "continuity", "subject", "argument", "structure", "measure"]
+people     = ["CHARACTER_A", "CHARACTER_B"]
+body_terms = []
+
+# The most productive constraint in testing: forbid a whole metaphorical domain so the book's
+# central conceits must be reinvented rather than retrieved. Name the domain this book OWNS and
+# the domain it may not enter.
+[forbidden_image_bank]
+owns      = []
+forbidden = []

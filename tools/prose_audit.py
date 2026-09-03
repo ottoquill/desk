@@ -12,12 +12,12 @@ script is the prosthesis. It reports what a human writer would notice by feel.
 Stdlib only. See method/06-idiolect-ledger.md for what the numbers mean and
 method/07-voice-engineering.md for how a voice profile is set.
 """
-import argparse, json, os, re, sys, math
+import argparse, json, os, re, sys, math, tomllib
 from collections import Counter, defaultdict
 
 # ---------------------------------------------------------------- text loading
 
-FRONTMATTER = re.compile(r'\A---\s*\n.*?\n---\s*\n', re.S)
+FRONTMATTER = re.compile(r'\A(?:---|\+\+\+)\s*\n.*?\n(?:---|\+\+\+)\s*\n', re.S)
 HEADING     = re.compile(r'^#.*$', re.M)
 GLYPH       = re.compile(r'^\s*[◆*_—\-]{1,5}\s*$', re.M)
 
@@ -355,20 +355,43 @@ def report(label, rep, refr, rows, profile, scr=None):
         p("    clean against the ledger.")
     p("")
 
+def load_profile(path):
+    """A voice profile is human-authored config, so it is TOML."""
+    with open(path, 'rb') as fh:
+        return tomllib.load(fh)
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('dirs', nargs='+', help='manuscript director(ies)')
-    ap.add_argument('--profile', help='voice profile JSON (budgets, cadence targets, declared refrains)')
+    ap.add_argument('dirs', nargs='*', help='manuscript director(ies)')
+    ap.add_argument('--profile', help='voice profile TOML (budgets, cadence targets, refrains)')
+    ap.add_argument('--world', help='world root or world.toml')
+    ap.add_argument('--product', help='product id within --world')
     ap.add_argument('--json', action='store_true', help='emit machine-readable JSON')
     ap.add_argument('--refrain-n', type=int, default=6)
     ap.add_argument('--refrain-min', type=int, default=3)
     a = ap.parse_args()
 
-    profile = json.load(open(a.profile)) if a.profile else {}
+    dirs, profile_path = list(a.dirs), a.profile
+    if a.world:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import world as world_mod
+        try:
+            w = world_mod.load(a.world)
+            p = w.product(a.product) if a.product else None
+        except world_mod.WorldError as e:
+            sys.exit(f"prose_audit: {e}")
+        if p is None:
+            sys.exit("prose_audit: --world requires --product")
+        dirs.append(str(p.manuscript))
+        profile_path = profile_path or str(p.editorial / 'voice-profile.toml')
+    if not dirs:
+        sys.exit("prose_audit: give a manuscript directory, or --world with --product")
+
+    profile = load_profile(profile_path) if profile_path else {}
     declared = tuple(profile.get('declared_refrains', []))
 
     books = {}
-    for d in a.dirs:
+    for d in dirs:
         chapters = load(d)
         if not chapters:
             print(f"no .md chapters in {d}", file=sys.stderr); continue
