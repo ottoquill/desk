@@ -4,6 +4,7 @@ __pycache__/
 
 # The Hugo site: content/ is generated from method/ and templates/ by
 # site/generate.py, and public/ is the build. Neither is a source.
+site/node_modules/
 site/content/
 site/public/
 site/resources/

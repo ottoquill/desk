@@ -6,6 +6,7 @@
   // dashboard so that it lives in the repository, which is the arrangement
   // ottoquill/tinarex arrived at after two failed builds — see its DEPLOYMENT.md.
 
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ottoquill",
   "compatibility_date": "2026-09-03",
 

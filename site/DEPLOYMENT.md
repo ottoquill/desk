@@ -1,6 +1,6 @@
 # Deploying ottoquill.com
 
-## Steps
+## Setup: deploy on push
 
 Before any push:
 
@@ -28,7 +28,31 @@ python3 site/check.py
 
 After this, every push to `main` deploys. Other branches get preview deployments.
 
+## Manual deployment, from any branch
+
+Deploys whatever is checked out, from this machine, without going through GitHub.
+
+```bash
+cd site
+npm install          # first time only
+npm run preview      # gate, build, upload a version — a preview URL, live site untouched
+npm run deploy       # gate, build, deploy to production
+```
+
+Authentication is wrangler's own: `npx wrangler login` if not already logged in,
+`npx wrangler whoami` to check.
+
+Live now at **https://ottoquill.domains-68b.workers.dev** — deployed manually from
+`writing-method`.
+
 ## Why
+
+**Manual deploys and the gate.** `npm run deploy` runs `check.py` first and stops on a
+broken link, so the gate cannot be skipped by deploying by hand. `npm run preview` uses
+`wrangler versions upload`, which uploads a version and returns a preview URL without
+moving production traffic — that is the one to use for a branch. Production must exist
+before a version can be uploaded against it, so the very first deploy of a new Worker
+is `npm run deploy`.
 
 **Step 3, root directory `site`.** The Hugo project is not at the repo root. Without
 this the build finds no `hugo.toml`.

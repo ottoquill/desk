@@ -1,0 +1,15 @@
+{
+  "name": "ottoquill",
+  "private": true,
+  "description": "ottoquill.com — the public wiki, built from desk's own documents",
+  "scripts": {
+    "dev": "python3 generate.py && hugo server",
+    "build": "python3 generate.py && hugo --gc --minify",
+    "check": "python3 check.py",
+    "deploy": "npm run check && wrangler deploy",
+    "preview": "npm run check && wrangler versions upload"
+  },
+  "devDependencies": {
+    "wrangler": "^4.127.1"
+  }
+}

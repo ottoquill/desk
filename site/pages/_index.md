@@ -1,5 +1,6 @@
 ---
-title: "Otto Quill"
+# No title on purpose: hugo-book renders "<page title> • <site title>", and on
+# the home page both would be "Otto Quill".
 ---
 # Otto Quill
 
