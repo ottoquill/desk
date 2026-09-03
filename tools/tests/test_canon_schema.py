@@ -38,6 +38,33 @@ class TestSchema(unittest.TestCase):
             self.assertIn('rank', s['kinds']['character']['optional'])
             self.assertIn('pronouns', s['kinds']['character']['optional'])
 
+    def test_world_can_add_new_ref_field_to_existing_kind(self):
+        with tempfile.TemporaryDirectory() as d:
+            write(d, 'world.toml', 'title = "T"\nschema = "canon/extra.toml"\n')
+            write(d, 'canon/extra.toml',
+                  '[kinds.character]\nrefs = { aliases = "term" }\n')
+            s = canon.load_schema(world.load(d))
+            self.assertIn('aliases', s['kinds']['character']['refs'])
+            self.assertEqual(s['kinds']['character']['refs']['aliases'], 'term')
+            self.assertIn('factions', s['kinds']['character']['refs'])
+
+    def test_world_redeclaring_ref_with_different_target_raises_error(self):
+        with tempfile.TemporaryDirectory() as d:
+            write(d, 'world.toml', 'title = "T"\nschema = "canon/extra.toml"\n')
+            write(d, 'canon/extra.toml',
+                  '[kinds.relationship]\nrefs = { between = "faction" }\n')
+            with self.assertRaises(canon.CanonError) as cm:
+                canon.load_schema(world.load(d))
+            self.assertIn('between', str(cm.exception))
+
+    def test_world_redeclaring_identical_ref_is_harmless(self):
+        with tempfile.TemporaryDirectory() as d:
+            write(d, 'world.toml', 'title = "T"\nschema = "canon/extra.toml"\n')
+            write(d, 'canon/extra.toml',
+                  '[kinds.relationship]\nrefs = { between = "character" }\n')
+            s = canon.load_schema(world.load(d))
+            self.assertEqual(s['kinds']['relationship']['refs']['between'], 'character')
+
 
 if __name__ == '__main__':
     unittest.main()

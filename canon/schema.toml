@@ -2,7 +2,9 @@
 #
 # A world EXTENDS this through the `schema` key in its world.toml. Extension adds kinds and adds
 # fields to existing kinds; it never removes either, because a world that could delete a base field
-# would put desk's guarantees at the mercy of each world.
+# would put desk's guarantees at the mercy of each world. For refs specifically: a world may add
+# new ref fields, may redeclare an existing ref with its identical base target (no-op), and must
+# not redirect an existing ref to a different target (raises CanonError).
 #
 #   required  fields that must be present, beyond [common]
 #   optional  fields the validator recognises and leaves alone

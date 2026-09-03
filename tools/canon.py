@@ -42,7 +42,15 @@ def load_schema(world=None):
             if isinstance(value, list):
                 base[key] = sorted(set(base.get(key, [])) | set(value))
             elif isinstance(value, dict):
-                base.setdefault(key, {}).update(value)
+                # refs merge: add new fields, reject redirects, allow identical redeclarations
+                base_dict = base.setdefault(key, {})
+                for field, target in value.items():
+                    if field in base_dict and base_dict[field] != target:
+                        raise CanonError(
+                            f"{kind}.{key}.{field}: world tried to change target from "
+                            f'"{base_dict[field]}" to "{target}"'
+                        )
+                    base_dict[field] = target
             else:
                 base[key] = value
     return schema
