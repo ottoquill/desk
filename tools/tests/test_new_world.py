@@ -1,4 +1,4 @@
-import pathlib, sys, tempfile, unittest
+import pathlib, sys, tempfile, tomllib, unittest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import canon, new_world, world
 
@@ -25,8 +25,23 @@ class TestNewWorld(unittest.TestCase):
     def test_refuses_to_overwrite_an_existing_manifest(self):
         with tempfile.TemporaryDirectory() as d:
             root = new_world.scaffold(pathlib.Path(d) / 'w', 'T')
-            with self.assertRaises(SystemExit):
+            with self.assertRaises(new_world.NewWorldError):
                 new_world.scaffold(root, 'T')
+
+    def test_title_with_quotes_and_backslash_round_trips(self):
+        with tempfile.TemporaryDirectory() as d:
+            title = 'The "Great" War \\ Backslash'
+            root = new_world.scaffold(pathlib.Path(d) / 'w', title)
+            w = world.load(root)
+            self.assertEqual(w.title, title)
+
+    def test_hugo_config_parses_with_special_characters_in_title(self):
+        with tempfile.TemporaryDirectory() as d:
+            title = 'The "Great" War \\ Backslash'
+            root = new_world.scaffold(pathlib.Path(d) / 'w', title)
+            hugo_content = (root / 'hugo.toml').read_bytes()
+            parsed = tomllib.loads(hugo_content.decode('utf-8'))
+            self.assertEqual(parsed['title'], title)
 
 
 if __name__ == '__main__':

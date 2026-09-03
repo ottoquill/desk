@@ -13,6 +13,11 @@ import argparse
 import pathlib
 import sys
 
+
+class NewWorldError(Exception):
+    """Error creating a new world."""
+    pass
+
 MANIFEST = '''# The whole interface between this world and desk.
 # Paths below are defaults; declare only what differs. Products are declared, never discovered.
 
@@ -40,12 +45,14 @@ CANON_DIRS = ('characters', 'places', 'factions', 'events', 'artifacts', 'terms'
 def scaffold(path, title):
     root = pathlib.Path(path)
     if (root / 'world.toml').exists():
-        sys.exit(f"new_world: {root / 'world.toml'} already exists; refusing to overwrite")
+        raise NewWorldError(f"{root / 'world.toml'} already exists; refusing to overwrite")
+    # Escape title for TOML: backslashes first, then quotes.
+    safe = title.replace('\\', '\\\\').replace('"', '\\"')
     for sub in CANON_DIRS:
         (root / 'content' / 'canon' / sub).mkdir(parents=True, exist_ok=True)
         (root / 'content' / 'canon' / sub / '.gitkeep').write_text('', encoding='utf-8')
-    (root / 'world.toml').write_text(MANIFEST.format(title=title), encoding='utf-8')
-    (root / 'hugo.toml').write_text(HUGO.format(title=title), encoding='utf-8')
+    (root / 'world.toml').write_text(MANIFEST.format(title=safe), encoding='utf-8')
+    (root / 'hugo.toml').write_text(HUGO.format(title=safe), encoding='utf-8')
     return root
 
 
@@ -56,7 +63,11 @@ def main():
     ap.add_argument('--title', required=True)
     a = ap.parse_args()
 
-    root = scaffold(a.path, a.title)
+    try:
+        root = scaffold(a.path, a.title)
+    except NewWorldError as e:
+        sys.exit(f"new_world: {e}")
+
     print(f"""
 created {root}/
   world.toml            the manifest desk reads
