@@ -10,7 +10,10 @@ and continuity.py reads the front matter as a typed fact store.
 
 Stdlib only. Requires Python 3.11+ for tomllib.
 """
+import argparse
 import pathlib
+import re
+import sys
 import tomllib
 
 SCHEMA = pathlib.Path(__file__).resolve().parent.parent / 'canon' / 'schema.toml'
@@ -54,3 +57,115 @@ def load_schema(world=None):
             else:
                 base[key] = value
     return schema
+
+
+FRONTMATTER = re.compile(r'\A\+\+\+[ \t]*\n(.*?)\n\+\+\+[ \t]*\n?', re.S)
+
+# Fields that are structure rather than facts about the entity.
+NOT_A_FACT = {'kind', 'id', 'name', 'direction'}
+
+
+def parse_page(path):
+    """A canon page: TOML front matter delimited `+++`, prose in the body."""
+    raw = pathlib.Path(path).read_text(encoding='utf-8')
+    m = FRONTMATTER.match(raw)
+    if not m:
+        raise CanonError(f"{path}: no `+++` TOML front matter")
+    try:
+        meta = tomllib.loads(m.group(1))
+    except tomllib.TOMLDecodeError as e:
+        raise CanonError(f"{path}: front matter: {e}") from None
+    return meta, raw[m.end():]
+
+
+def load_pages(world):
+    """Every canon page under the world's canon directory, sorted by path."""
+    if not world.canon.is_dir():
+        raise CanonError(f"no canon directory at {world.canon}")
+    pages = []
+    for p in sorted(world.canon.rglob('*.md')):
+        meta, body = parse_page(p)
+        pages.append((p, meta, body))
+    return pages
+
+
+def _check_relationship(path, meta, errors):
+    between = meta.get('between') or []
+    if len(between) != 2:
+        errors.append(f"{path}: relationship needs exactly two members in `between`, "
+                      f"got {len(between)}")
+        return
+    want = {(between[0], between[1]), (between[1], between[0])}
+    got = {(d.get('from'), d.get('to')) for d in (meta.get('direction') or [])}
+    if got != want:
+        errors.append(f"{path}: relationship must declare both directions "
+                      f"{sorted(want)}; got {sorted(got)}")
+
+
+def validate(pages, schema):
+    """Every problem with this canon, as a list of strings. Empty means valid."""
+    errors = []
+    common = schema['common']['required']
+    kinds = schema['kinds']
+    seen = {}
+    ids_by_kind = {}
+    for path, meta, _ in pages:
+        ids_by_kind.setdefault(meta.get('kind'), set()).add(meta.get('id'))
+
+    for path, meta, _ in pages:
+        for field in common:
+            if field not in meta:
+                errors.append(f"{path}: missing required field {field!r}")
+        kind = meta.get('kind')
+        pid = meta.get('id')
+        if pid is not None:
+            if pid in seen:
+                errors.append(f"{path}: duplicate id {pid!r} (also in {seen[pid]})")
+            else:
+                seen[pid] = path
+        if kind is None:
+            continue
+        if kind not in kinds:
+            errors.append(f"{path}: unknown kind {kind!r}; schema declares "
+                          f"{', '.join(sorted(kinds))}")
+            continue
+        spec = kinds[kind]
+        for field in spec.get('required', []):
+            if field not in meta:
+                errors.append(f"{path}: {kind} missing required field {field!r}")
+        for field, target in (spec.get('refs') or {}).items():
+            value = meta.get(field)
+            if value is None:
+                continue
+            for v in (value if isinstance(value, list) else [value]):
+                if v not in ids_by_kind.get(target, set()):
+                    errors.append(f"{path}: {field} -> {v!r} does not resolve to a {target}")
+        if kind == 'relationship':
+            _check_relationship(path, meta, errors)
+    return errors
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--world', required=True, help='world root, or the world.toml itself')
+    a = ap.parse_args()
+
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import world as world_mod
+    try:
+        w = world_mod.load(a.world)
+        pages = load_pages(w)
+        errors = validate(pages, load_schema(w))
+    except (CanonError, world_mod.WorldError) as e:
+        sys.exit(f"canon: {e}")
+
+    print(f"\n  CANON — {w.canon}  ({len(pages)} pages)")
+    for e in errors:
+        print(f"    x {e}")
+    print(f"\n  {'FAIL' if errors else 'PASS'} — {len(errors)} finding(s)\n")
+    sys.exit(1 if errors else 0)
+
+
+if __name__ == '__main__':
+    main()
