@@ -2178,6 +2178,161 @@ EOF
 
 ---
 
+---
+
+### Task 12: CLI integration tests for the `--world` paths
+
+**Added during execution.** Two independent reviewers flagged the same gap: the `--world` branches
+in `continuity.py` and `prose_audit.py` — the entire point of this plan — carry no regression
+tests, and were verified only by throwaway fixtures that were discarded. Each was individually
+Minor; together they leave the plan's central feature unprotected.
+
+**Files:**
+- Test: `tools/tests/test_cli_world.py`
+
+**Interfaces:**
+- Consumes: `new_world.scaffold`, `new_book.add`, and the two tools' CLIs as subprocesses.
+- Produces: nothing. This task adds tests only.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tools/tests/test_cli_world.py`. Build a real world in a temp directory with
+`new_world.scaffold` and `new_book.add`, write two canon character pages and one chapter, then
+drive each CLI with `subprocess.run([sys.executable, ...], capture_output=True, text=True)` and
+assert on exit codes and output. Cover exactly these cases:
+
+```python
+import json, pathlib, subprocess, sys, tempfile, unittest
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+import new_book, new_world
+
+TOOLS = pathlib.Path(__file__).resolve().parents[1]
+CHARACTER = '+++\nkind = "character"\nid = "{id}"\nname = "{name}"\n+++\n\nProse.\n'
+
+
+def run(script, *args):
+    return subprocess.run([sys.executable, str(TOOLS / script), *args],
+                          capture_output=True, text=True)
+
+
+class TestCliWorld(unittest.TestCase):
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = new_world.scaffold(pathlib.Path(self._tmp.name) / 'w', 'Test World')
+        new_book.add(self.root, 'Test Book', 'one')
+        canon = self.root / 'content/canon/characters'
+        (canon / 'a.md').write_text(CHARACTER.format(id='a', name='Ashgrove'), encoding='utf-8')
+        (canon / 'b.md').write_text(CHARACTER.format(id='b', name='Bellwether'), encoding='utf-8')
+        ms = self.root / 'books/one/manuscript'
+        (ms / 'ch01.md').write_text('---\npov: a\n---\n\nAshgrove waited. Then she left.\n',
+                                    encoding='utf-8')
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def test_canon_cli_passes_on_a_valid_world(self):
+        r = run('canon.py', '--world', str(self.root))
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('PASS', r.stdout)
+
+    def test_canon_cli_fails_on_a_dangling_reference(self):
+        (self.root / 'content/canon/characters/c.md').write_text(
+            '+++\nkind = "character"\nid = "c"\nname = "C"\nfactions = ["ghosts"]\n+++\n\nP.\n',
+            encoding='utf-8')
+        r = run('canon.py', '--world', str(self.root))
+        self.assertEqual(r.returncode, 1)
+        self.assertIn('ghosts', r.stdout)
+
+    def test_continuity_world_sources_names_from_canon(self):
+        r = run('continuity.py', str(self.root / 'books/one/manuscript'),
+                '--world', str(self.root))
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('NAMES ALREADY IN CANON', r.stdout)
+
+    def test_continuity_explicit_names_wins_over_world(self):
+        names = self.root / 'names.json'
+        names.write_text(json.dumps({'Somebody': ['elsewhere']}), encoding='utf-8')
+        r = run('continuity.py', str(self.root / 'books/one/manuscript'),
+                '--world', str(self.root), '--names', str(names))
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('CROSS-BOOK NAME REUSE', r.stdout)
+        self.assertNotIn('NAMES ALREADY IN CANON', r.stdout)
+
+    def test_continuity_explicit_facts_wins_over_world(self):
+        facts = self.root / 'invented.json'
+        facts.write_text(json.dumps([
+            {'entity': 'a', 'attribute': 'rank', 'value': 'captain', 'unit': '', 'chapter': 'x'},
+            {'entity': 'a', 'attribute': 'rank', 'value': 'ensign', 'unit': '', 'chapter': 'y'}]),
+            encoding='utf-8')
+        r = run('continuity.py', str(self.root / 'books/one/manuscript'),
+                '--world', str(self.root), '--facts', str(facts))
+        self.assertEqual(r.returncode, 1)
+        self.assertIn('CONFLICTS', r.stdout)
+
+    def test_prose_audit_world_requires_product(self):
+        r = run('prose_audit.py', '--world', str(self.root))
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn('--product', r.stdout + r.stderr)
+
+    def test_prose_audit_world_with_product_reads_the_manuscript(self):
+        r = run('prose_audit.py', '--world', str(self.root), '--product', 'one')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+    def test_prose_audit_unknown_product_fails_naming_the_known_ones(self):
+        r = run('prose_audit.py', '--world', str(self.root), '--product', 'nope')
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn('one', r.stdout + r.stderr)
+
+    def test_positional_invocation_still_works_without_world(self):
+        r = run('prose_audit.py', str(self.root / 'books/one/manuscript'))
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+- [ ] **Step 2: Run the tests**
+
+Run: `python3 -m unittest discover -s tools/tests -t . -v`
+
+Any test that fails here is reporting a real defect in the CLI wiring, not a defect in the test.
+Read the failure, fix the tool, and say in your report what was broken. Do not weaken an assertion
+to make it pass. If a tool's output text differs from what the test expects but the behaviour is
+right, adjust the expected string — and say so.
+
+- [ ] **Step 3: Confirm the suite is pristine**
+
+Run: `python3 -W error -m unittest discover -s tools/tests -t . 2>&1 | tail -3`
+Expected: all passing, no warnings. Subprocess-based tests must not leak handles.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add tools/tests/test_cli_world.py
+git commit -m "$(cat <<'EOF'
+Cover the --world CLI paths, which had no regression tests at all
+
+Two reviewers independently flagged the same gap on two different tasks: the
+--world branches in continuity.py and prose_audit.py were verified only by
+fixtures that were built by hand and then thrown away. Those branches are the
+whole point of this work — the thing that lets a tool find a manuscript and its
+canon without being told a layout — and nothing would have caught them
+regressing.
+
+These drive both CLIs as subprocesses against a world built by the real
+scaffolds, so they exercise the wiring end to end rather than the functions
+underneath it. The precedence rules get particular attention, because they are
+the part most likely to be broken by a plausible-looking edit: an explicit
+--facts or --names must beat the world-derived value, since a per-wave
+invented.json is a different lifecycle from canon and both have to stay
+scannable.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+EOF
+)"
+```
+
 ## Verification
 
 After Task 11, the whole thing should stand up end to end. Run this from the repo root:
