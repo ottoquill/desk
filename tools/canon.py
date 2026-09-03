@@ -6,6 +6,10 @@ Canon is Markdown in Hugo's native shape: TOML front matter carrying the checkab
 the body carrying the lore. One artifact, three consumers — Hugo renders it, this script checks it,
 and continuity.py reads the front matter as a typed fact store.
 
+Canon pages are read from the world's canon directory. Files whose names begin with an underscore
+are skipped — these are Hugo section metadata (_index.md) and branch-bundle configuration, not canon
+pages themselves.
+
     python3 tools/canon.py --world PATH [--json]
 
 Stdlib only. Requires Python 3.11+ for tomllib.
@@ -84,6 +88,9 @@ def load_pages(world):
         raise CanonError(f"no canon directory at {world.canon}")
     pages = []
     for p in sorted(world.canon.rglob('*.md')):
+        # Skip underscore-prefixed files — these are Hugo section metadata, not canon pages
+        if p.name.startswith('_'):
+            continue
         meta, body = parse_page(p)
         pages.append((p, meta, body))
     return pages

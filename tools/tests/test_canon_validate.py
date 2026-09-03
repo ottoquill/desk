@@ -99,6 +99,26 @@ class TestValidate(unittest.TestCase):
                                   'c/r.md': rel})
             self.assertEqual(errs, [])
 
+    def test_underscore_prefixed_file_with_no_front_matter_is_skipped(self):
+        with tempfile.TemporaryDirectory() as d:
+            w = make_world(d, {'c/a.md': CHARACTER.format(id='a', name='A'),
+                               'c/_index.md': 'This is section metadata, no front matter.\n'})
+            # Should not raise and should not produce errors
+            pages = canon.load_pages(w)
+            errs = canon.validate(pages, canon.load_schema(w))
+            self.assertEqual(len(pages), 1)  # Only a.md, not _index.md
+            self.assertEqual(errs, [])
+
+    def test_underscore_prefixed_file_with_invalid_front_matter_is_skipped(self):
+        with tempfile.TemporaryDirectory() as d:
+            w = make_world(d, {'c/a.md': CHARACTER.format(id='a', name='A'),
+                               'c/_index.md': '+++\ntitle = "Section"\n+++\n\nSection prose.\n'})
+            # Should not raise even though _index.md has invalid front matter
+            pages = canon.load_pages(w)
+            errs = canon.validate(pages, canon.load_schema(w))
+            self.assertEqual(len(pages), 1)  # Only a.md, not _index.md
+            self.assertEqual(errs, [])
+
 
 if __name__ == '__main__':
     unittest.main()
