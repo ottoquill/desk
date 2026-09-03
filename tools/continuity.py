@@ -172,11 +172,6 @@ def scan_fact_list(facts):
             out.append((e, a, sorted(vals), [r.get('chapter', '?') for r in rows]))
     return out
 
-
-def scan_facts(path):
-    with open(path) as fh:
-        return scan_fact_list(json.load(fh))
-
 # ------------------------------------------------------------------------ report
 
 def main():
@@ -253,12 +248,19 @@ def main():
     if not col:
         print("    no surname does duty for two characters")
     if registry is not None:
-        label = 'NAMES ALREADY IN CANON' if a.world and not a.names else 'CROSS-BOOK NAME REUSE'
+        # Two different registries, so two different rows. --world maps a name to the canon page
+        # ids carrying it; --names maps a name to the books that used it. Printing "previously
+        # used in" under NAMES ALREADY IN CANON named a page id as though it were a book.
+        in_canon = bool(a.world) and not a.names
+        label = 'NAMES ALREADY IN CANON' if in_canon else 'CROSS-BOOK NAME REUSE'
         print(f"\n  {label}  ({len(reused)} matched)")
-        for n, books in reused.items():
-            print(f"    ! {n} — previously used in: {', '.join(books)}")
+        for n, where in reused.items():
+            where = ', '.join(str(x) for x in where)
+            print(f"    ! {n} — already a canon page: {where}" if in_canon
+                  else f"    ! {n} — previously used in: {where}")
         if not reused:
-            print("    no name reused from a previous book")
+            print("    no manuscript name is already a canon page" if in_canon
+                  else "    no name reused from a previous book")
 
     print(f"\n  {'FAIL' if fail else 'PASS'} — {fail} finding(s)\n")
     sys.exit(1 if fail else 0)

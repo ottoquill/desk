@@ -3,7 +3,8 @@
 new_world.py — scaffold a world that references desk.
 
 Mechanical setup only. It creates the manifest, the canon skeleton and a Hugo config that mounts
-desk's module, then prints the commands to run next. It drafts nothing and drives no stage.
+desk's layouts and archetypes, then prints the commands to run next. It drafts nothing and drives
+no stage.
 
     python3 tools/new_world.py PATH --title "Title"
 
@@ -13,12 +14,18 @@ import argparse
 import pathlib
 import sys
 
+# desk's tools live in one directory and import each other by name.
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from world import MANIFEST  # the manifest's filename, so the two spellings cannot drift
+
+HUGO_CONFIG = 'hugo.toml'
+
 
 class NewWorldError(Exception):
     """Error creating a new world."""
-    pass
 
-MANIFEST = '''# The whole interface between this world and desk.
+
+MANIFEST_TEMPLATE = '''# The whole interface between this world and desk.
 # Paths below are defaults; declare only what differs. Products are declared, never discovered.
 
 title = "{title}"
@@ -31,7 +38,7 @@ canon = "content/canon"
 # path = "books/book-one"
 '''
 
-HUGO = '''# Mounts desk's canon layouts and archetypes. A world that renders no wiki can delete
+HUGO_TEMPLATE = '''# Mounts desk's canon layouts and archetypes. A world that renders no wiki can delete
 # this file. These are mounts rather than a [[module.imports]] entry because an import names a Hugo
 # Module, which Hugo resolves through the Go toolchain or under themes/ — and desk is a git
 # submodule at desk/, so the import fails before a single page renders. A mount needs neither.
@@ -63,15 +70,18 @@ CANON_DIRS = ('characters', 'places', 'factions', 'events', 'artifacts', 'terms'
 
 def scaffold(path, title):
     root = pathlib.Path(path)
-    if (root / 'world.toml').exists():
-        raise NewWorldError(f"{root / 'world.toml'} already exists; refusing to overwrite")
+    # Both files are checked before anything is written. Refusing on the manifest alone and then
+    # writing hugo.toml unconditionally destroyed a pre-existing Hugo site config and exited 0.
+    for name in (MANIFEST, HUGO_CONFIG):
+        if (root / name).exists():
+            raise NewWorldError(f"{root / name} already exists; refusing to overwrite")
     # Escape title for TOML: backslashes first, then quotes.
     safe = title.replace('\\', '\\\\').replace('"', '\\"')
     for sub in CANON_DIRS:
         (root / 'content' / 'canon' / sub).mkdir(parents=True, exist_ok=True)
         (root / 'content' / 'canon' / sub / '.gitkeep').write_text('', encoding='utf-8')
-    (root / 'world.toml').write_text(MANIFEST.format(title=safe), encoding='utf-8')
-    (root / 'hugo.toml').write_text(HUGO.format(title=safe), encoding='utf-8')
+    (root / MANIFEST).write_text(MANIFEST_TEMPLATE.format(title=safe), encoding='utf-8')
+    (root / HUGO_CONFIG).write_text(HUGO_TEMPLATE.format(title=safe), encoding='utf-8')
     return root
 
 

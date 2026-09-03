@@ -18,6 +18,11 @@ import pathlib
 import shutil
 import sys
 
+# desk's tools live in one directory and import each other by name.
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import world as world_mod
+from world import MANIFEST  # the manifest's filename, so the two spellings cannot drift
+
 TEMPLATES = pathlib.Path(__file__).resolve().parent.parent / 'templates'
 COPY = ('voice-profile.toml', 'style-sheet.md', 'promise-ledger.md', 'critic-briefs.md')
 BOOK_PLACEHOLDER = 'book = "TITLE"'
@@ -41,11 +46,8 @@ def _escape(value):
 
 
 def add(world_path, title, slug):
-    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-    import world as world_mod
-
     root = pathlib.Path(world_path)
-    manifest = root / 'world.toml'
+    manifest = root / MANIFEST
     try:
         existing = world_mod.load(root).products
     except world_mod.WorldError as e:
@@ -89,7 +91,7 @@ def main():
     a = ap.parse_args()
 
     root = pathlib.Path(a.world)
-    if root.name == 'world.toml':
+    if root.name == MANIFEST:
         root = root.parent
 
     try:
@@ -105,11 +107,12 @@ created {product}/
   editorial/critic-briefs.md     held fixed across products; editing it makes yields incomparable
   manuscript/
 
-declared in {root / 'world.toml'}
+declared in {root / MANIFEST}
 
 next:
+  cd {root}
   1. Stage 1, the spine. Never delegated. Gate: back-cover copy and last line exist.
-  2. python3 {pathlib.Path(__file__).parent}/canon.py --world {root}
+  2. python3 desk/tools/canon.py --world .
 """)
 
 

@@ -46,6 +46,14 @@ def load_schema(world=None):
     for kind, spec in _read_toml(world.schema).get('kinds', {}).items():
         base = schema['kinds'].setdefault(kind, {'required': [], 'optional': [], 'refs': {}})
         for key, value in spec.items():
+            # A world writing `required = "when"` where the base holds a list used to fall through
+            # to the scalar branch and REPLACE the list, after which every page reported a missing
+            # field named 'w', 'h', 'e', 'n'; `refs = "place"` blew up with AttributeError instead.
+            if key in base and not isinstance(value, type(base[key])):
+                raise CanonError(
+                    f"{kind}.{key}: the base schema holds a {type(base[key]).__name__} here, "
+                    f"the world declares a {type(value).__name__} ({value!r})"
+                )
             if isinstance(value, list):
                 base[key] = sorted(set(base.get(key, [])) | set(value))
             elif isinstance(value, dict):
@@ -96,14 +104,54 @@ def load_pages(world):
     return pages
 
 
+# An unfilled slot, not a reference. desk's own archetypes ship `origin = ""` and `factions = []`,
+# so without this a page made from desk's archetype fails desk's own validator as a dangling ref.
+def _is_empty(value):
+    return value is None or value == '' or value == []
+
+
+def _check_refs(path, field, target, value, ids_by_kind, errors):
+    """Every id in a ref field resolves to a page of the target kind.
+
+    A gate must not crash on the material it gates: a field holding a TOML table used to raise
+    `TypeError: unhashable type: 'dict'` out of the membership test, killing the whole run on one
+    malformed page. Wrong types are reported as findings like any other."""
+    if _is_empty(value):
+        return
+    for v in (value if isinstance(value, list) else [value]):
+        if isinstance(v, (dict, list)):
+            shape = 'table' if isinstance(v, dict) else 'list'
+            errors.append(f"{path}: {field} holds a {shape} where an id was expected; "
+                          f"a reference is an id or a list of ids")
+        elif _is_empty(v):
+            continue
+        elif v not in ids_by_kind.get(target, set()):
+            errors.append(f"{path}: {field} -> {v!r} does not resolve to a {target}")
+
+
 def _check_relationship(path, meta, errors):
     between = meta.get('between') or []
-    if len(between) != 2:
+    if not isinstance(between, list) or len(between) != 2:
         errors.append(f"{path}: relationship needs exactly two members in `between`, "
-                      f"got {len(between)}")
+                      f"got {between!r}")
         return
+    if not all(isinstance(m, str) for m in between):
+        errors.append(f"{path}: relationship `between` holds two ids; got {between!r}")
+        return
+    directions = meta.get('direction') or []
+    if not isinstance(directions, list) or not all(isinstance(d, dict) for d in directions):
+        errors.append(f"{path}: relationship `direction` is a list of tables; "
+                      f"got {directions!r}")
+        return
+    got = set()
+    for d in directions:
+        frm, to = d.get('from'), d.get('to')
+        if not isinstance(frm, str) or not isinstance(to, str):
+            errors.append(f"{path}: relationship `direction` needs a string `from` and `to`; "
+                          f"got {frm!r} -> {to!r}")
+            return
+        got.add((frm, to))
     want = {(between[0], between[1]), (between[1], between[0])}
-    got = {(d.get('from'), d.get('to')) for d in (meta.get('direction') or [])}
     if got != want:
         errors.append(f"{path}: relationship must declare both directions "
                       f"{sorted(want)}; got {sorted(got)}")
@@ -141,12 +189,7 @@ def validate(pages, schema):
             if field not in meta:
                 errors.append(f"{path}: {kind} missing required field {field!r}")
         for field, target in (spec.get('refs') or {}).items():
-            value = meta.get(field)
-            if value is None:
-                continue
-            for v in (value if isinstance(value, list) else [value]):
-                if v not in ids_by_kind.get(target, set()):
-                    errors.append(f"{path}: {field} -> {v!r} does not resolve to a {target}")
+            _check_refs(path, field, target, meta.get(field), ids_by_kind, errors)
         if kind == 'relationship':
             _check_relationship(path, meta, errors)
     return errors

@@ -54,6 +54,28 @@ class TestCliWorld(unittest.TestCase):
         # Not just the heading: the canon name the manuscript actually reuses must be named.
         self.assertIn('! Ashgrove', r.stdout)
 
+    def test_canon_rows_do_not_claim_a_page_id_is_a_previous_book(self):
+        """Under NAMES ALREADY IN CANON the match is a canon page, never a book."""
+        r = run('continuity.py', str(self.root / 'books/one/manuscript'),
+                '--world', str(self.root))
+        self.assertNotIn('previously used in', r.stdout)
+        self.assertIn('already a canon page', r.stdout)
+
+    def test_the_canon_clean_line_matches_its_heading(self):
+        (self.root / 'content/canon/characters/a.md').unlink()
+        r = run('continuity.py', str(self.root / 'books/one/manuscript'),
+                '--world', str(self.root))
+        self.assertIn('NAMES ALREADY IN CANON', r.stdout)
+        self.assertIn('no manuscript name is already a canon page', r.stdout)
+        self.assertNotIn('no name reused from a previous book', r.stdout)
+
+    def test_explicit_names_still_reads_as_a_previous_book(self):
+        names = self.root / 'names.json'
+        names.write_text(json.dumps({'Somebody': ['elsewhere']}), encoding='utf-8')
+        r = run('continuity.py', str(self.root / 'books/one/manuscript'),
+                '--names', str(names))
+        self.assertIn('! Somebody — previously used in: elsewhere', r.stdout)
+
     def test_continuity_explicit_names_wins_over_world(self):
         names = self.root / 'names.json'
         names.write_text(json.dumps({'Somebody': ['elsewhere']}), encoding='utf-8')

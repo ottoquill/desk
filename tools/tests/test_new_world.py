@@ -55,6 +55,26 @@ class TestNewWorld(unittest.TestCase):
             with self.assertRaises(new_world.NewWorldError):
                 new_world.scaffold(root, 'T')
 
+    def test_refuses_to_overwrite_an_existing_hugo_config(self):
+        """A world with a Hugo site already in it had its hugo.toml destroyed, and exit 0."""
+        with tempfile.TemporaryDirectory() as d:
+            root = pathlib.Path(d) / 'w'
+            root.mkdir()
+            existing = 'baseURL = "https://example.test/"\ntheme = "mine"\n'
+            (root / 'hugo.toml').write_text(existing, encoding='utf-8')
+            with self.assertRaises(new_world.NewWorldError):
+                new_world.scaffold(root, 'T')
+            self.assertEqual((root / 'hugo.toml').read_text(encoding='utf-8'), existing)
+
+    def test_a_refusal_writes_nothing_at_all(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = pathlib.Path(d) / 'w'
+            root.mkdir()
+            (root / 'hugo.toml').write_text('baseURL = "/"\n', encoding='utf-8')
+            with self.assertRaises(new_world.NewWorldError):
+                new_world.scaffold(root, 'T')
+            self.assertEqual(sorted(p.name for p in root.iterdir()), ['hugo.toml'])
+
     def test_title_with_quotes_and_backslash_round_trips(self):
         with tempfile.TemporaryDirectory() as d:
             title = 'The "Great" War \\ Backslash'

@@ -66,5 +66,42 @@ class TestSchema(unittest.TestCase):
             self.assertEqual(s['kinds']['relationship']['refs']['between'], 'character')
 
 
+class TestSchemaMergeTypes(unittest.TestCase):
+    """A world's schema is TOML a person wrote by hand; a wrong type is a finding, not a crash."""
+
+    def _load_with(self, d, kinds_toml):
+        write(d, 'world.toml', 'title = "T"\nschema = "canon/schema.toml"\n')
+        write(d, 'canon/schema.toml', kinds_toml)
+        return canon.load_schema(world.load(d))
+
+    def test_a_scalar_may_not_replace_a_required_list(self):
+        """`required = "when"` used to yield missing fields named 'w', 'h', 'e', 'n'."""
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(canon.CanonError) as cm:
+                self._load_with(d, '[kinds.event]\nrequired = "when"\n')
+            self.assertIn('event', str(cm.exception))
+            self.assertIn('required', str(cm.exception))
+
+    def test_a_scalar_may_not_replace_a_refs_table(self):
+        """`refs = "place"` used to raise AttributeError out of the merge."""
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(canon.CanonError) as cm:
+                self._load_with(d, '[kinds.event]\nrefs = "place"\n')
+            self.assertIn('event', str(cm.exception))
+            self.assertIn('refs', str(cm.exception))
+
+    def test_a_list_may_not_replace_a_refs_table(self):
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(canon.CanonError) as cm:
+                self._load_with(d, '[kinds.character]\nrefs = ["factions"]\n')
+            self.assertIn('character', str(cm.exception))
+
+    def test_a_wrong_type_on_a_brand_new_kind_is_caught_too(self):
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(canon.CanonError) as cm:
+                self._load_with(d, '[kinds.technology]\nrequired = "era"\n')
+            self.assertIn('technology', str(cm.exception))
+
+
 if __name__ == '__main__':
     unittest.main()
