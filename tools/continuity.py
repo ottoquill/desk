@@ -33,7 +33,7 @@ Stdlib only.
 import argparse, json, os, re, sys, unicodedata
 from collections import Counter, defaultdict
 
-FRONTMATTER = re.compile(r'\A---\s*\n.*?\n---\s*\n', re.S)
+FRONTMATTER = re.compile(r'\A(?:---|\+\+\+)\s*\n.*?\n(?:---|\+\+\+)\s*\n', re.S)
 
 # Words that are capitalised for reasons other than being a name.
 STOP = set('''The A An And But Or So If When While Then There Here That This These Those It He She
@@ -155,9 +155,8 @@ def scan_surnames(chapters, registry=None, families=()):
                 reused[name] = books
     return collisions, reused
 
-def scan_facts(path):
+def scan_fact_list(facts):
     """A typed fact store: any (entity, attribute) with two values is a contradiction."""
-    facts = json.load(open(path))
     keyed = defaultdict(list)
     for f in facts:
         keyed[(str(f['entity']).strip().lower(), str(f['attribute']).strip().lower())].append(f)
@@ -169,6 +168,10 @@ def scan_facts(path):
             out.append((e, a, sorted(vals), [r.get('chapter', '?') for r in rows]))
     return out
 
+
+def scan_facts(path):
+    return scan_fact_list(json.load(open(path)))
+
 # ------------------------------------------------------------------------ report
 
 def main():
@@ -176,6 +179,7 @@ def main():
     ap.add_argument('manuscript')
     ap.add_argument('--facts', help='typed fact store JSON (merged `invented` arrays)')
     ap.add_argument('--names', help='cross-book used-names registry JSON: {"Name": ["book", ...]}')
+    ap.add_argument('--world', help='world root or world.toml; sources facts and names from canon')
     ap.add_argument('--families', nargs='*', default=[],
                     help='surnames legitimately shared by related characters (suppresses the collision check)')
     a = ap.parse_args()
@@ -183,14 +187,28 @@ def main():
     chapters = load(a.manuscript)
     if not chapters:
         sys.exit(f'no chapters in {a.manuscript}')
-    registry = json.load(open(a.names)) if a.names else None
+
+    facts, registry, source = None, None, None
+    if a.world:
+        sys.path.insert(0, str(os.path.dirname(os.path.abspath(__file__))))
+        import canon, world as world_mod
+        try:
+            w = world_mod.load(a.world)
+            pages = canon.load_pages(w)
+        except (canon.CanonError, world_mod.WorldError) as e:
+            sys.exit(f"continuity: {e}")
+        facts, registry, source = canon.facts(pages), canon.names(pages), str(w.canon)
+    if a.facts:
+        facts, source = json.load(open(a.facts)), a.facts
+    if a.names:
+        registry = json.load(open(a.names))
     fail = 0
 
     print(f"\n{'='*78}\n  CONTINUITY SCAN — {a.manuscript}  ({len(chapters)} chapters)\n{'='*78}")
 
-    if a.facts:
-        conflicts = scan_facts(a.facts)
-        print(f"\n  FACT STORE  ({'CONFLICTS' if conflicts else 'clean'})")
+    if facts is not None:
+        conflicts = scan_fact_list(facts)
+        print(f"\n  FACT STORE  ({'CONFLICTS' if conflicts else 'clean'} — {len(facts)} from {source})")
         for e, at, vals, chs in conflicts:
             fail += 1
             print(f"    ✗ {e} · {at}: {' vs '.join(vals)}   [{', '.join(map(str, chs))}]")
@@ -228,7 +246,8 @@ def main():
     if not col:
         print("    no surname does duty for two characters")
     if registry is not None:
-        print(f"\n  CROSS-BOOK NAME REUSE  ({len(reused)} names already used elsewhere)")
+        label = 'NAMES ALREADY IN CANON' if a.world and not a.names else 'CROSS-BOOK NAME REUSE'
+        print(f"\n  {label}  ({len(reused)} matched)")
         for n, books in reused.items():
             print(f"    ! {n} — previously used in: {', '.join(books)}")
         if not reused:
