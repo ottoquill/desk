@@ -55,7 +55,8 @@ def load(d):
     for f in sorted(os.listdir(d)):
         if not f.endswith('.md') or f.upper().startswith('README'):
             continue
-        t = open(os.path.join(d, f), encoding='utf-8').read()
+        with open(os.path.join(d, f), encoding='utf-8') as fh:
+            t = fh.read()
         out.append((f, FRONTMATTER.sub('', t)))
     return out
 
@@ -170,7 +171,8 @@ def scan_fact_list(facts):
 
 
 def scan_facts(path):
-    return scan_fact_list(json.load(open(path)))
+    with open(path) as fh:
+        return scan_fact_list(json.load(fh))
 
 # ------------------------------------------------------------------------ report
 
@@ -199,9 +201,11 @@ def main():
             sys.exit(f"continuity: {e}")
         facts, registry, source = canon.facts(pages), canon.names(pages), str(w.canon)
     if a.facts:
-        facts, source = json.load(open(a.facts)), a.facts
+        with open(a.facts, encoding='utf-8') as fh:
+            facts, source = json.load(fh), a.facts
     if a.names:
-        registry = json.load(open(a.names))
+        with open(a.names, encoding='utf-8') as fh:
+            registry = json.load(fh)
     fail = 0
 
     print(f"\n{'='*78}\n  CONTINUITY SCAN — {a.manuscript}  ({len(chapters)} chapters)\n{'='*78}")

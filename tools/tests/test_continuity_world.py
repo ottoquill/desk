@@ -1,4 +1,4 @@
-import pathlib, sys, tempfile, unittest
+import pathlib, sys, tempfile, unittest, warnings
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import continuity
 
@@ -29,6 +29,15 @@ class TestContinuityWorld(unittest.TestCase):
             (name, text), = continuity.load(d)
             self.assertNotIn('pov', text)
             self.assertIn('The body.', text)
+
+    def test_load_does_not_leak_open_file_handles(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = pathlib.Path(d) / 'ch01.md'
+            p.write_text('---\npov: a\n---\n\nThe body.\n', encoding='utf-8')
+            with warnings.catch_warnings(record=True) as caught:
+                warnings.simplefilter('always')
+                continuity.load(d)
+            self.assertFalse(any(issubclass(w.category, ResourceWarning) for w in caught))
 
 
 if __name__ == '__main__':
