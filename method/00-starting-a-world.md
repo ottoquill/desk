@@ -23,10 +23,10 @@ has canon and no measurement; `desk` with no world has a gate and no manuscript 
 ## Desk as a submodule
 
 A world holds `desk` as a git submodule at `desk/`, pinned to a commit the way any dependency is
-pinned. Adding it to a fresh world:
+pinned. From a fresh world directory that is not yet a git repository:
 
 ```bash
-git submodule add <desk-remote> desk
+git init && git submodule add <desk-remote> desk
 ```
 
 Cloning a world that already declares the submodule needs one more step, since a plain `git clone`
@@ -118,7 +118,7 @@ declared in `world.toml` is refused rather than overwritten.
 
 ## The path from concept to draft
 
-Stages 1 through 5 of `03-the-pipeline.md`, in the order a book actually moves through them, each
+Stages 0 through 5 of `03-the-pipeline.md`, in the order a book actually moves through them, each
 paired with the command whose exit code is its gate — a number a script returns, not a description
 a person reads and nods along to.
 
@@ -126,17 +126,25 @@ a person reads and nods along to.
 |---|---|---|
 | 0 · Inherit | `new_world.py`, then `new_book.py` | the profile inherits every prior ban and tightens one |
 | 1 · The spine | premise, argument, ending, refusals. Never delegated | back-cover copy and the last line exist |
-| 2 · Canon and outline | canon pages, machine-readable outline | `python3 desk/tools/canon.py --world .` returns zero |
+| 2 · Canon and outline | canon pages, machine-readable outline | `python3 desk/tools/canon.py --world .` returns zero: pages valid against the schema, ids unique, references live |
 | 4 · Wave drafting | chapters in waves, in the reader's ignorance | `python3 desk/tools/continuity.py <ms> --world .` returns zero |
 | 5 · Post-wave audit | after each wave, never at book end | `python3 desk/tools/idiolect_probe.py <ms>` exits zero |
+
+Stage 2's other gate — the one `03-the-pipeline.md` actually specifies for the outline half, a
+repeat budget per shape tag, a chapter ceiling on the central relationship's absence, and a named
+planting chapter for every payoff — has no script behind it yet. `canon.py` covers only the canon
+half of the stage; the outline half is still read and judged rather than measured.
 
 Stage 3, the voice constitution, sits between the outline and drafting, and it has no single exit
 code: it gets written as prohibition, at the level of syntax, and its check is that each narrator
 owns a figure no other narrator gets to use. See `07-voice-engineering.md` for how that gets
 written, and for the measured reason a mood-description style sheet fails to do the job.
 
-At Stage 5, `prose_audit.py` supplies the description and `idiolect_probe.py` supplies the gate.
-They read the same profile; only one of them returns the exit code a wave is allowed to pass on.
+At Stage 5, `prose_audit.py` supplies the description and `idiolect_probe.py` supplies the gate,
+and the two do not share an input. `prose_audit.py` measures a manuscript against that product's
+own `editorial/voice-profile.toml`; `idiolect_probe.py` enforces the cross-book ledger compiled
+into its own source, a table no single book's profile can edit or loosen. Only the second exit
+code decides whether a wave is allowed to pass.
 
 ```bash
 python3 desk/tools/prose_audit.py --world . --product book-one
