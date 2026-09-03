@@ -164,7 +164,16 @@ def facts(pages):
         for key, value in meta.items():
             if key in NOT_A_FACT or isinstance(value, (list, dict)):
                 continue
-            out.append({'entity': entity, 'attribute': key, 'value': value,
+            # Convert non-JSON-serializable types. Numbers pass through unchanged because the
+            # contradiction check depends on numeric equality (two spellings of the same number
+            # must compare equal, and stringifying would break that).
+            if isinstance(value, (str, int, float, bool)):
+                converted = value
+            elif hasattr(value, 'isoformat'):
+                converted = value.isoformat()
+            else:
+                converted = str(value)
+            out.append({'entity': entity, 'attribute': key, 'value': converted,
                         'unit': '', 'chapter': str(path)})
     return out
 
