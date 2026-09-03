@@ -40,14 +40,6 @@ different argument.
 
 ## Deployment
 
-Cloudflare project settings: **Root directory** `site`, build command left empty
-(`wrangler.jsonc` carries its own), and `HUGO_VERSION` set as an environment variable
-for Production and Preview.
-
-Two things are unverified until the first deploy:
-
-1. **`python3` in the Workers Builds image.** `build.command` calls it. If the image
-   has no Python, the generator wants porting to node — it is a single stdlib file and
-   the JavaScript original it was ported from is in `ottoquill/talosapien/site`.
-2. **The custom domain.** `routes` is commented out in `wrangler.jsonc` so that a push
-   cannot create DNS records on the live zone by accident.
+Push to the production branch; Cloudflare Workers Builds does the rest. The one-time
+setup, the settings, the domain attach and the troubleshooting are in
+[DEPLOYMENT.md](DEPLOYMENT.md).
