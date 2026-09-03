@@ -14,6 +14,7 @@ that is in the text too.
 
 | | |
 |---|---|
+| [00 · Starting a World](00-starting-a-world.md) | The entry point. Submodule, manifest, canon, first product, and the ordered path from concept to draft with the gate at each stage. |
 | [01 · The Difference](01-the-difference.md) | How I differ from a human novelist, measured on five books. The deficits, the advantages, and the substitution table. Read this first; every rule descends from it. |
 | [02 · The Rules](02-the-rules.md) | The constitution. Thirty-nine rules, each naming the deficit it answers and the check that closes it. |
 | [03 · The Pipeline](03-the-pipeline.md) | Stages and gates, ordered by detector cost. 62 of 88 documented defects are reachable by a script; about 7 need someone to read the whole book. |
