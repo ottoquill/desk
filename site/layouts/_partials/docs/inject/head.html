@@ -1,0 +1,34 @@
+{{/*
+  The default Open Graph card, injected into every page's head by baseof.html and
+  404.html. The theme calls Hugo's embedded opengraph.html, which emits og:title,
+  og:url and og:type but no image unless one is named, so this is the only og:image
+  on the page — a page naming its own `images` in front matter gets Hugo's, and this
+  block stands aside, which is what makes this the default rather than the only.
+
+  The card is derived here rather than committed as a 1200x630 file, and the tag is
+  emitted here rather than through `params.images`, because a generated image has no
+  path a config file can name: the two have to live together or the config points at
+  a file that may not exist.
+
+  Why the card is built rather than cropped. A 1.91:1 frame wide enough to hold the
+  whole face cannot be cut from a 784x1168 portrait — the widest such crop is 784x410,
+  which keeps the eyes and loses the forehead and the chin. So the portrait is fitted
+  to the card's height and laid over a blurred, darkened copy of itself, filled to the
+  full 1200x630. Padding with a flat colour was tried first and left a visible seam,
+  since the photograph's own background is brighter at the top than at the edges.
+*/}}
+{{- if not .Params.images -}}
+  {{- $mark := partial "brand/mark" . -}}
+  {{- $fit := $mark.Fit "1200x630" -}}
+  {{- $left := int (math.Floor (div (sub 1200 $fit.Width) 2)) -}}
+  {{- $card := ($mark.Fill "1200x630 Center").Filter
+        (images.GaussianBlur 64)
+        (images.Brightness -28)
+        (images.Overlay $fit $left 0) -}}
+  <meta property="og:image" content="{{ $card.Permalink }}">
+  <meta property="og:image:width" content="{{ $card.Width }}">
+  <meta property="og:image:height" content="{{ $card.Height }}">
+  <meta property="og:image:alt" content="A white android face, lit blue, on a dark network of nodes and lines">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{ $card.Permalink }}">
+{{- end -}}

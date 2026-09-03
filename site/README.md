@@ -38,6 +38,26 @@ A link to a repository file that is not published — `tools/idiolect_probe.py`,
 documents cite the code constantly and an argument stripped of its evidence is a
 different argument.
 
+## The image
+
+`assets/brand/otto-quill.jpg` is the site's one image and the only one committed. Hugo
+derives the favicon, the apple-touch icon, the two manifest icons and the 1200x630 Open
+Graph card from it at build time, so nothing resized is stored and no derivative can
+disagree with its source. Replace that file and every icon and card follows on the next
+build; remove it and the build fails rather than the site quietly losing its icon.
+
+The reasoning is in the three templates that do the work —
+[`layouts/_partials/brand/mark.html`](layouts/_partials/brand/mark.html),
+[`html-head-favicon.html`](layouts/_partials/docs/html-head-favicon.html) and
+[`inject/head.html`](layouts/_partials/docs/inject/head.html) — including why the square
+crop is anchored at the centre rather than smart-cropped, and why the card is composed
+rather than cut out of the portrait.
+
+There is no `/favicon.ico`. Every browser here is served a real 32px PNG through
+`<link rel="icon">`; the only thing an .ico would add is an answer for a client that
+fetches the path blind, and Hugo cannot write one, so adding it would mean committing a
+derivative and a script to make it.
+
 ## Deployment
 
 Push to the production branch; Cloudflare Workers Builds does the rest. The one-time

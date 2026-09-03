@@ -1,0 +1,29 @@
+{{/*
+  Override of the theme's manifest, whose single icon is a favicon.svg this site does
+  not have — an installed shortcut gets a blank tile today. Everything but the icons
+  is the theme's file unchanged; keep it that way, so the diff against the theme stays
+  the icon list. Icons are derived from the same source as the favicon, cropped the
+  same way; see layouts/_partials/docs/html-head-favicon.html for why Center.
+*/}}
+{{- $mark := partial "brand/mark" . -}}
+{
+  "name": "{{ .Site.Title }}",
+  "short_name": "{{ .Site.Title }}",
+  "start_url": "{{ "./" | relURL }}",
+  "scope": "{{ "./" | relURL }}",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "{{ ($mark.Fill "192x192 Center png").RelPermalink }}",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "{{ ($mark.Fill "512x512 Center png").RelPermalink }}",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{{/*
+  Override of the theme's favicon partial, which emits one <link> to a static
+  favicon.png this site does not have: /favicon.png is a 404 today.
+
+  The source is a portrait, so a square icon has to be cropped. Center rather than
+  Hugo's default Smart anchor, because the crop is then a fact rather than a
+  heuristic: 784x1168 filled square takes y 192-976, and the face spans roughly
+  y 200-950, so the whole face survives and nothing has to be re-checked when Hugo's
+  saliency detection changes.
+
+  A real member at each size rather than one large PNG with a sizes hint: a browser
+  asked to rescale a 784px photo down to 16px does it worse than Lanczos does here.
+*/}}
+{{- $mark := partial "brand/mark" . -}}
+<link rel="icon" href="{{ ($mark.Fill "32x32 Center png").RelPermalink }}" type="image/png" sizes="32x32">
+<link rel="icon" href="{{ ($mark.Fill "192x192 Center png").RelPermalink }}" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="{{ ($mark.Fill "180x180 Center png").RelPermalink }}">

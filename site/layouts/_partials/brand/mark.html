@@ -1,0 +1,18 @@
+{{/*
+  The site's one image, returned as a resource. Every icon and the social card are
+  derived from it by Hugo at build time, so no resized copy is committed and a
+  derivative cannot disagree with its source.
+
+  784x1168, a portrait: a white android face on a dark blue network of nodes. Supplied
+  on 2026-09-03 from https://photos.app.goo.gl/QFZU4pKwwxuoMt3S8, which is a share link
+  rather than an image and cannot be linked to from a page — the file has to be here.
+
+  A missing source is a build failure rather than a silently iconless site — the
+  favicon and the Open Graph card would both vanish without a word otherwise, and
+  the site would look right in every local check that does not open a browser.
+*/}}
+{{- $src := resources.Get "brand/otto-quill.jpg" -}}
+{{- if not $src -}}
+  {{- errorf "assets/brand/otto-quill.jpg is missing: the favicon, the manifest icons and the Open Graph card are all derived from it" -}}
+{{- end -}}
+{{- return $src -}}
