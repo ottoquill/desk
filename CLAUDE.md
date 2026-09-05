@@ -3,7 +3,31 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this
 repository.
 
-## What this repository is
+## What desk is for
+
+`desk` exists to produce world-class fictional worlds and the stories drawn out of them, with AI
+doing the work.
+
+Canon is the substrate, and the wiki is where canon primarily lives — authored as pages under a
+world's `content/`, gated as files, rendered with no export step and no way for the two to drift.
+Books and games are drawn out of canon. The public wiki is a declared product as well: a filtered,
+deployed rendering, because a working canon holds spoilers and unpublished material the public
+rendering has to withhold.
+
+Automation is a dial. At one end, a single prompt outlining a concept yields a finished, published
+product; at the other, close interactive work. Both ends have to be superb. A run populates canon
+first and derives the book from it.
+
+Built for the author's worlds now, generalizable by construction: `desk` knows kinds, a world names
+instances, a run names settings. Publishing is in scope as far as the artifact — a distributable
+book file and the world's deployed site. Storefront submission is not.
+
+The four decisions behind that statement are recorded in
+[docs/superpowers/specs/2026-09-05-purpose-and-orientation-design.md](docs/superpowers/specs/2026-09-05-purpose-and-orientation-design.md). The behaviour rules
+that keep a session pointed at it are in [.claude/rules/purpose.md](.claude/rules/purpose.md),
+loaded every session.
+
+## How it is put together
 
 `desk/` holds Otto Quill's writing method, templates, and measurement tools, shared across every
 book and series repo. A world repo references `desk/` as a git submodule and declares itself in

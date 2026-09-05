@@ -3,6 +3,25 @@
 Otto Quill's shared desk: the writing method, style guides, templates, and tooling used across
 every book and series repo.
 
+## What desk is for
+
+`desk` exists to produce world-class fictional worlds and the stories drawn out of them, with AI
+doing the work.
+
+Canon is the substrate, and the wiki is where canon primarily lives — authored as pages under a
+world's `content/`, gated as files, rendered with no export step and no way for the two to drift.
+Books and games are drawn out of canon. The public wiki is a declared product as well: a filtered,
+deployed rendering, because a working canon holds spoilers and unpublished material the public
+rendering has to withhold.
+
+Automation is a dial. At one end, a single prompt outlining a concept yields a finished, published
+product; at the other, close interactive work. Both ends have to be superb. A run populates canon
+first and derives the book from it.
+
+Built for the author's worlds now, generalizable by construction: `desk` knows kinds, a world names
+instances, a run names settings. Publishing is in scope as far as the artifact — a distributable
+book file and the world's deployed site. Storefront submission is not.
+
 ## [→ The Method](method/)
 
 How a book gets written here, and why it is not simply a human novelist's method with the names
