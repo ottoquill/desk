@@ -3,9 +3,13 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this
 repository.
 
-**Read [docs/where-we-are.md](docs/where-we-are.md) first.** It carries the current state, the
-decisions in force and the defects already found. A session that skips it re-derives them, or
-guesses.
+The current state is loaded with this file rather than read on demand:
+
+@docs/where-we-are.md
+
+It opens with the arc and carries the decisions in force and the defects already found, dated.
+[.claude/rules/orientation.md](.claude/rules/orientation.md) says how to use it and when it has to
+be updated.
 
 ## What desk is for
 

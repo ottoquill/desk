@@ -3,7 +3,24 @@
 A living note. Sessions start with no memory of the last one; this is what a new session needs
 before it proposes anything. Update it when a decision is made, not afterwards.
 
-Last updated: 2026-09-05.
+Last updated: 2026-09-06.
+
+## The arc
+
+**What desk is for:** world-class fiction written by AI, at any level of human involvement — one
+prompt to a published book at one end, close line-by-line work at the other. Worlds are the
+substrate; the stories are drawn out of them.
+
+**Where it came from:** four finished novels, measured. Their defects became rules, the rules
+became gates, and the gates became tools. That is `method/` and `tools/`.
+
+**Where it stands:** never used. No book consumes it. On 2026-09-05 the purpose widened from a
+writing method to worlds as substrate with books derived from them; the documents say that now,
+and the code does not yet.
+
+**What moves next:** first contact with a real book — adopt `veganassassin`, the AI parts only.
+Behind that, the two absences the purpose names: nothing runs the pipeline, and nothing emits a
+book file.
 
 ## The state, measured
 
@@ -74,6 +91,6 @@ One defect that spike found is real whatever happens next: goldmark silently dro
 
 ## How to use this file
 
-Read it before proposing. If a proposal rests on something not written here or in the repo, say so
-and check rather than infer — three separate assumptions went unchecked on 2026-09-05, including a
-"requirement" of dependent repos that do not exist.
+It is loaded into every session; act on it before proposing. If a proposal rests on something not
+written here or in the repo, say so and check rather than infer — three separate assumptions went
+unchecked on 2026-09-05, including a "requirement" of dependent repos that do not exist.
