@@ -22,6 +22,37 @@ and the code does not yet.
 Behind that, the two absences the purpose names: nothing runs the pipeline, and nothing emits a
 book file.
 
+## The transition, for the session that makes it
+
+A note to myself, written 2026-09-06 while the move was being planned. It is temporary: once the
+first session in `veganassassin` has run and recorded what it found, fold the findings into the
+sections below and delete this one.
+
+**The plan.** Open `veganassassin` on a branch, add `desk` as a git submodule there, and develop
+desk from inside that checkout: edit under `veganassassin/desk/`, commit and push to desk, bump the
+pointer in the parent. Two clones of desk will exist; the submodule is the one to edit.
+
+**What will be lost, and how to get it back.** A session started in `veganassassin` does not load
+this repo's context. Expected, not yet tested:
+
+- `desk/CLAUDE.md` and this note load lazily — only after the session first touches a file under
+  `desk/`. Until then it knows nothing of the purpose or the decisions here. First fix: an
+  `@desk/CLAUDE.md` line in the book's own CLAUDE.md, so it loads at start.
+- `desk/.claude/rules/` most likely does not load at all from a subdirectory. Verify by trying,
+  then decide where desk's instructions have to live so a dependent repo receives them. This is
+  the first real question the experiment answers; do not copy the rules into the book repo, that
+  is the drift the purpose forbids.
+- The private memory store is keyed to the working directory, so the desk memories will not be
+  there. They say to keep knowledge in the repo, and this file is where.
+
+**Before writing anything in the book repo:** read it. Whether it has a remote, a CLAUDE.md, and
+a manuscript directory shaped the way `new_book.py` expects is unknown from here. Nothing adopts
+an existing book — `world.toml` will be written by hand, and what that takes is a finding.
+
+**Record as you go.** Every gap that surfaces on contact lands in this file the same turn, dated,
+in the sections below. The recorded reason: three assumptions went unchecked on 2026-09-05 and a
+correction that lived only in a spec was lost twice.
+
 ## The state, measured
 
 `desk` has never been used. Nothing on disk consumes it: no `world.toml` exists anywhere under
